@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+<defs>
+<linearGradient id="av" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c9a3f0"/><stop offset="1" stop-color="#7d4bb3"/></linearGradient>
+<linearGradient id="hd" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#eadcf9"/><stop offset="1" stop-color="#a77ad8"/></linearGradient>
+</defs>
+<rect width="40" height="40" rx="9" fill="#0b0a0d"/>
+<g transform="translate(0 2.5)">
+<path d="M5 17.2C9.5 17.2 11.5 15.2 15 15.2H33.5V19.6H29.2C27.4 19.6 26.4 20.8 26.4 22.6V24.6H29L30.6 29.4H11.4L13 24.6H15.6V22.6C15.6 20.9 14.7 20 13.1 19.8C9.6 19.4 7 18.6 5 17.2Z" fill="url(#av)"/>
+<path d="M15 15.2H33.5V16.6H15C11.6 16.6 9.6 18.2 6.4 18.1 5.9 17.8 5.4 17.5 5 17.2 9.5 17.2 11.5 15.2 15 15.2Z" fill="#e3d2f5" opacity=".55"/>
+<rect x="10.6" y="29.4" width="20.8" height="2.4" rx="1" fill="#6a3d9c"/>
+<g transform="rotate(32 23 11)">
+<rect x="21.7" y="0" width="2.6" height="11" rx="1.2" fill="#9a6acc"/>
+<rect x="17.5" y="9" width="11" height="5" rx="1.2" fill="url(#hd)"/>
+</g><g stroke="#e3d2f5" stroke-width="1.1" stroke-linecap="round">
+<path d="M15.6 12.6l-2.4-1.6M17 10.9l-1-2.6M14.6 14.4l-2.8-.2"/>
+</g>
+</g>
+</svg>

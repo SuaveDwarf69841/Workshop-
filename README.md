@@ -7,7 +7,7 @@ It is a single web page that installs on a phone or computer like an app and wor
 ## Put it on GitHub Pages
 
 1. Sign in at [github.com](https://github.com) and click **New repository**. Name it, for example, `workshop`. Choose **Public** (GitHub Pages on a free account needs a public repository; your *records* are never uploaded, only the app itself). Click **Create repository**.
-2. On the new repository page click **uploading an existing file**. Drag in everything from this folder: `index.html`, `manifest.webmanifest`, `sw.js`, `.nojekyll`, `README.md` and the `icons` folder. Click **Commit changes**.
+2. On the new repository page click **uploading an existing file**. Drag in everything from this folder: `index.html`, `manifest.webmanifest`, `sw.js`, `.nojekyll`, `README.md` and the five icon files (`icon.svg`, `icon-192.png`, `icon-512.png`, `maskable-512.png`, `apple-touch-icon.png`). There are no folders, so it works from a phone too. Click **Commit changes**.
    - Phone tip: the GitHub website upload works from Samsung Internet or Chrome too. Unzip the folder first in **My Files**.
 3. Go to **Settings → Pages**. Under **Build and deployment**, set **Source** to *Deploy from a branch*, **Branch** to `main` and folder `/ (root)`, then **Save**.
 4. After a minute or two the page shows your address, for example `https://yourname.github.io/workshop/`.
@@ -22,7 +22,7 @@ Open your address in **Chrome** or **Edge** and click the **install icon** at th
 
 **Chrome:** open your address, tap **⋮** → **Add to home screen** → **Install**.
 
-It then opens full screen from its own icon, and works without internet once it has been opened once. Long-press the icon for shortcuts to New sale, Market mode and Stones & rough.
+It then opens full screen from its own icon, and works without internet once it has been opened once. Long-press the icon for shortcuts to New sale, Market mode and Rough.
 
 ## Move your existing records across
 
