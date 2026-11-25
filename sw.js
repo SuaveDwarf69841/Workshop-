@@ -1,5 +1,5 @@
 /* Workshop offline support. Bump VERSION when you upload a new index.html. */
-const VERSION = 'v79';
+const VERSION = 'v86';
 const CACHE = 'workbench-' + VERSION;
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png', './maskable-512.png', './apple-touch-icon.png'];
 

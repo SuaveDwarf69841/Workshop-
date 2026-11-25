@@ -1371,7 +1371,7 @@ async function syncFromCode(code){const h=async t=>new Uint8Array(await crypto.s
 let syncServer='';
 async function syncServerAddr(hint){if(hint&&/^https:\/\//.test(hint))return hint.replace(/\/+$/,'');if(window.__syncServer)return window.__syncServer;if(syncServer)return syncServer;
   try{const v=localStorage.getItem('wsSyncServer');if(v)return syncServer=v}catch(e){}
-  try{const r=await fetch('sync-server.txt',{cache:'no-store'});if(r.ok){const t=(await r.text()).trim().split(/\s+/)[0];if(/^https:\/\/[^\s/]+\.[^\s/]+/.test(t))return syncServer=t.replace(/\/+$/,'')}}catch(e){}
+  try{const r=await fetch('sync-server.txt',{cache:'no-store'});if(r.ok){let t=(await r.text()).trim().split(/\s+/)[0]||'';if(t&&!/^[a-z]+:\/\//i.test(t))t='https://'+t;t=t.replace(/^http:\/\//i,'https://');if(/^https:\/\/[^\s/]+\.[^\s/]+/.test(t))return syncServer=t.replace(/\/+$/,'')}}catch(e){}
   return''}
 async function syncConnectCode(code,hint){const url=await syncServerAddr(hint);if(!url)throw new Error('noserver');const d=await syncFromCode(code);
   let h;try{h=await syncCall({op:'hello',acct:d.acct},url)}catch(e){const m=String(e.message||'');noteErr('Sync connect: '+m,'sync',1);
