@@ -2,7 +2,7 @@
 
 A business app for a lapidary and silversmithing studio: stock (rough, cut stones, jewellery, metals, equipment), cab and facet designs with diagrams, cutting and repair jobs, sales and invoices, market mode, money and GST, calculators, and a gemstone and supplier guide.
 
-It is a single web page that installs on a phone or computer like an app and works offline. There is no account: **your records are stored on the device you use it on**, and, if you turn on sync, in your own Google Drive, encrypted with your passphrase.
+It is a single web page that installs on a phone or computer like an app and works offline. There is no account: **your records are stored on the device you use it on**, and, if you turn on sync, on the family sync server, encrypted on the device with the business’s own sync code.
 
 ## Put it on GitHub Pages
 
@@ -39,7 +39,8 @@ Backups include your photos.
 - Records live in the browser storage on the phone. **Clearing Samsung Internet or Chrome site data, or uninstalling the browser, deletes them.**
 - Make a backup regularly: **Settings → Backup → Download backup**. The file goes to your **Downloads** folder. Copy it to Google Drive or email it to yourself.
 - The app reminds you if you haven't backed up for two weeks.
-- Each device keeps its own records. To keep your phone and computer in step, turn on **Settings → Sync with your other devices** on both; the app shows the steps (about five minutes, once). Without sync, move records with backup and restore.
+- Each device keeps its own records. To keep your phone and computer in step: on the device with your records, **Settings → Sync with your other devices → Turn on sync → Start sync on this device**; on the other device, **Join with a code** and scan the QR code it shows. There's nothing else to set up.
+- **Sync server (once, for whoever looks after the app):** deploy `workshop-sync-worker.js` as a Cloudflare Worker with a D1 database bound as `DB`, then put the worker's address in `sync-server.txt` in this repository (and in the app's repository).
 
 ## Updating the app
 

@@ -2,6 +2,8 @@
 <html lang="en" data-skin="amethyst">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'">
+<meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#2b1740">
 <meta name="mobile-web-app-capable" content="yes">
@@ -23,7 +25,7 @@
 :root{color-scheme:light dark;
 --bg:light-dark(#f6f5f9,#100e14);--card:light-dark(#fff,#1a1720);--ink:light-dark(#17141d,#eeeaf4);--mut:light-dark(#615a6d,#a49cb2);
 --line:light-dark(#e4e0ea,#2d2836);--soft:light-dark(#f1edf7,#221d2b);--side:light-dark(#2b1740,#1b1026);
---pri:light-dark(#5b2d8f,#b48ce6);--pri-ink:light-dark(#fff,#1a1024);--warn:light-dark(#b4501c,#f08a55);--bad:light-dark(#b3261e,#ff8a80);--ok:light-dark(#1d7a5a,#5fc79f);
+--pri:light-dark(#5b2d8f,#b48ce6);--pri-ink:light-dark(#fff,#1a1024);--warn:light-dark(#a0461a,#f08a55);--bad:light-dark(#b3261e,#ff8a80);--ok:light-dark(#176a4d,#5fc79f);
 --stone:light-dark(#d9c5f0,#5a3d80);--shadow:0 1px 2px #0000000d,0 2px 8px #0000000a}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
@@ -712,13 +714,45 @@ main,dialog{overflow-wrap:break-word}
 /* polish: label/value lists wrap long values instead of squashing the labels; help buttons get a larger tap area */
 dl.kv,.kv{grid-template-columns:fit-content(62%) minmax(0,1fr)}dl.kv dd,.kv dd{white-space:normal;overflow-wrap:break-word}
 button.info{position:relative}button.info::after{content:'';position:absolute;inset:-8px;border-radius:50%}
+
+/* contrast (WCAG AA): text on bright fills in dark mode, today's date, favourite star */
+.cday.today .cnum{background:color-mix(in srgb,var(--acc) 22%,transparent);color:var(--ink);box-shadow:inset 0 0 0 2px var(--acc)}
+.gsi.done .gsck,.pal-badge{color:light-dark(#fff,#14101c)}
+.fav{color:light-dark(#9a6d00,#f5c518)}
+
+/* ---- polish pass: phone header tucks away while scrolling, filters behind a button, sync light, comfortable touch targets ---- */
+@media(max-width:900px){.side{transition:transform .22s ease}:root.hdrTuck .side{transform:translateY(calc(-1 * var(--tuck,0px)))}}
+:root.zq900 .side{transition:transform .22s ease}:root.zq900.hdrTuck .side{transform:translateY(calc(-1 * var(--tuck,0px)))}
+@media(prefers-reduced-motion:reduce){.side{transition:none}}
+.fbtn{display:none;align-items:center;gap:6px}.fbtn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.fbtn.on{border-color:var(--pri);color:var(--pri)}.fcount{display:inline-grid;place-items:center;min-width:20px;height:20px;border-radius:10px;background:var(--pri);color:var(--card);font-size:12px;font-weight:700;padding:0 5px}
+@media(max-width:600px){.fbtn:not([hidden]){display:inline-flex}#stockF:not(.open){display:none}}
+:root.zq600 .fbtn:not([hidden]){display:inline-flex}:root.zq600 #stockF:not(.open){display:none}
+.brand{position:relative}.side .syncchip{margin-left:auto;width:auto;flex:none;display:inline-flex;align-items:center;gap:5px;min-height:32px;padding:0 10px;border-radius:16px;border:1px solid #ffffff22;background:#ffffff10;color:#e9e0f5;font-size:12.5px;font-weight:600;cursor:pointer}
+.syncchip[hidden]{display:none}.syncchip svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.syncchip.ok svg{stroke:#7fe0b6}.side .syncchip.bad{border-color:#f0a07a;color:#ffd2bd}.syncchip.off{opacity:.8}
+.syncchip.busy svg{animation:syncspin 1s linear infinite}@keyframes syncspin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.syncchip.busy svg{animation:none}}
+.brand{align-self:stretch}
+@media(min-width:901px){.side .syncchip span{display:none}.side .syncchip{position:absolute;right:0;top:2px;min-height:28px;width:28px;padding:0;justify-content:center}.side .brand:has(.syncchip:not([hidden])){padding-right:30px}}
+:root.zq900 .side .syncchip span{display:inline}:root.zq900 .side .syncchip{position:static;width:auto;padding:0 10px}
+.banner.bk{display:grid;grid-template-columns:8px minmax(0,1fr) auto;gap:8px 10px;align-items:center}.banner.bk::before{margin-top:0}.banner .bkb{display:flex;gap:8px}
+@media(max-width:600px){.banner.bk{grid-template-columns:8px minmax(0,1fr)}.banner.bk::before{align-self:start;margin-top:7px}.banner .bkb{grid-column:2}}
+:root.zq600 .banner.bk{grid-template-columns:8px minmax(0,1fr)}:root.zq600 .banner .bkb{grid-column:2}
+.num,.tile b,.money,td.r,.item .r b{font-variant-numeric:tabular-nums}
+@media(pointer:coarse){button,select,input:not([type=checkbox]):not([type=radio]),label.btn{min-height:44px}
+  button.info{min-height:0}#calPrev,#calNext{min-width:44px}.cardx{width:44px;height:44px;top:4px;right:4px}
+  input[type=checkbox],input[type=radio]{width:24px;height:24px}label.check{min-height:44px;display:inline-flex;align-items:center;gap:8px}}
+section.on{animation:secin .16s ease-out}@keyframes secin{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){section.on{animation:none}}
+:root.palTuck .pal{transform:translateY(calc(100% + 24px));opacity:0;pointer-events:none}.pal{transition:transform .25s ease,opacity .2s}
 @media(max-width:900px){.side{padding-top:max(10px,env(safe-area-inset-top))}}main{padding-bottom:calc(80px + env(safe-area-inset-bottom))}.toast{bottom:calc(20px + env(safe-area-inset-bottom))}@media(max-width:600px){.df{padding-bottom:calc(12px + env(safe-area-inset-bottom))}}
 </style>
 </head>
 <body>
 <div class="app">
 <aside class="side">
-  <div class="brand"><svg viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="bAv" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c9a3f0"/><stop offset="1" stop-color="#7d4bb3"/></linearGradient><linearGradient id="bHd" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#eadcf9"/><stop offset="1" stop-color="#a77ad8"/></linearGradient></defs><rect width="40" height="40" rx="9" fill="#0b0a0d"/><g transform="translate(0 2.5)"><path d="M5 17.2C9.5 17.2 11.5 15.2 15 15.2H33.5V19.6H29.2C27.4 19.6 26.4 20.8 26.4 22.6V24.6H29L30.6 29.4H11.4L13 24.6H15.6V22.6C15.6 20.9 14.7 20 13.1 19.8C9.6 19.4 7 18.6 5 17.2Z" fill="url(#bAv)"/><path d="M15 15.2H33.5V16.6H15C11.6 16.6 9.6 18.2 6.4 18.1 5.9 17.8 5.4 17.5 5 17.2 9.5 17.2 11.5 15.2 15 15.2Z" fill="#e3d2f5" opacity=".55"/><rect x="10.6" y="29.4" width="20.8" height="2.4" rx="1" fill="#6a3d9c"/><g transform="rotate(32 23 11)"><rect x="21.7" y="0" width="2.6" height="11" rx="1.2" fill="#9a6acc"/><rect x="17.5" y="9" width="11" height="5" rx="1.2" fill="url(#bHd)"/></g><g stroke="#e3d2f5" stroke-width="1.1" stroke-linecap="round"><path d="M15.6 12.6l-2.4-1.6M17 10.9l-1-2.6M14.6 14.4l-2.8-.2"/></g></g></svg><div class="bn"><b id="bizName">Workshop</b><small>Lapidary &amp; silversmithing</small></div></div>
+  <div class="brand"><svg viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="bAv" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c9a3f0"/><stop offset="1" stop-color="#7d4bb3"/></linearGradient><linearGradient id="bHd" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#eadcf9"/><stop offset="1" stop-color="#a77ad8"/></linearGradient></defs><rect width="40" height="40" rx="9" fill="#0b0a0d"/><g transform="translate(0 2.5)"><path d="M5 17.2C9.5 17.2 11.5 15.2 15 15.2H33.5V19.6H29.2C27.4 19.6 26.4 20.8 26.4 22.6V24.6H29L30.6 29.4H11.4L13 24.6H15.6V22.6C15.6 20.9 14.7 20 13.1 19.8C9.6 19.4 7 18.6 5 17.2Z" fill="url(#bAv)"/><path d="M15 15.2H33.5V16.6H15C11.6 16.6 9.6 18.2 6.4 18.1 5.9 17.8 5.4 17.5 5 17.2 9.5 17.2 11.5 15.2 15 15.2Z" fill="#e3d2f5" opacity=".55"/><rect x="10.6" y="29.4" width="20.8" height="2.4" rx="1" fill="#6a3d9c"/><g transform="rotate(32 23 11)"><rect x="21.7" y="0" width="2.6" height="11" rx="1.2" fill="#9a6acc"/><rect x="17.5" y="9" width="11" height="5" rx="1.2" fill="url(#bHd)"/></g><g stroke="#e3d2f5" stroke-width="1.1" stroke-linecap="round"><path d="M15.6 12.6l-2.4-1.6M17 10.9l-1-2.6M14.6 14.4l-2.8-.2"/></g></g></svg><div class="bn"><b id="bizName">Workshop</b><small>Lapidary &amp; silversmithing</small></div><button type="button" class="syncchip" id="syncChip" hidden></button></div>
   <div class="wsseg" id="wsSeg"></div><div class="wsh" id="wsHead"></div><nav id="tabs"></nav>
   <div class="grow"></div>
   <button class="setb" id="setBtn2"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6a7 7 0 0 0 0 2.4l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.6a7 7 0 0 0 2-1.2l2.4 1 2-3.4-2-1.6c.1-.4.1-.8.1-1.2z"/></svg>Settings</button>
@@ -726,7 +760,7 @@ button.info{position:relative}button.info::after{content:'';position:absolute;in
 <div class="wrap">
 <header class="topbar">
   <div class="crumb" id="crumb"></div>
-  <input class="gsearch" id="gq" type="search" placeholder="Search stock, SKU, contacts, invoices" aria-label="Search everything">
+  <input class="gsearch" id="gq" type="search" placeholder="Search stock, SKU, contacts, invoices" data-short="Search everything" aria-label="Search everything">
   <button class="ghost" id="setBtn" aria-label="Settings">Settings</button>
 </header>
 <main>
@@ -774,6 +808,7 @@ button.info{position:relative}button.info::after{content:'';position:absolute;in
   <div class="row" style="margin-bottom:12px">
     <input class="search" id="stockQ" type="search" placeholder="Search name, SKU, metal, shape, location">
     <select id="stockSort" class="auto" aria-label="Sort"><option value="name">A–Z</option><option value="new">Newest</option><option value="value">Highest value</option><option value="qty">Lowest quantity</option></select>
+    <button type="button" class="fbtn" id="stockFBtn" aria-controls="stockF" aria-expanded="false">Filters</button>
     <label class="check note"><input type="checkbox" id="stockZero"> Show sold out</label>
   </div>
   <div class="row stockfilt" id="stockF" style="margin:-4px 0 12px"></div>
@@ -1032,7 +1067,16 @@ let tt;
 function toast(m,act){const t=$('#toast'),dg=document.getElementById('dlg'),host=dg&&dg.open?dg:document.body;if(t.parentNode!==host)host.append(t);t.classList.toggle('indlg',host!==document.body);if(host!==document.body){const f=document.getElementById('dFoot'),fr=f?.getBoundingClientRect(),dr=host.getBoundingClientRect();t.style.bottom=fr&&fr.height?Math.max(12,Math.round(dr.bottom-fr.top)+10)+'px':''}else{const sb=document.getElementById('selBar');t.style.bottom=sb&&!sb.hidden&&sb.offsetHeight?Math.round(innerHeight-sb.getBoundingClientRect().top+10)+'px':''}$('#toastMsg').textContent=m;t.querySelector('button')?.remove();
   if(act){const b=document.createElement('button');b.type='button';b.textContent=act.label;b.onclick=()=>{t.classList.remove('on');act.fn()};t.append(b)}
   t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),act?6000:2400)}
-function banner(m){const b=$('#banner');b.innerHTML=m||'';b.classList.toggle('on',!!m)}
+function banner(m,keep){const b=$('#banner');if(b.dataset.other&&!keep)return;b.innerHTML=m||'';b.classList.toggle('on',!!m)}
+/* the "back up now and then" note: only when there's no recent backup of any kind, with the button right there */
+let bkOn=false;
+function bkBanner(){bkOn=true;const st=S.settings,now=Date.now(),D=14*864e5;
+  const fresh=t=>t&&now-t<D,b=$('#banner');if(!b||b.dataset.other)return;
+  const quiet=fresh(st.lastBackup)||(st.autoBk!==false&&fresh(st.lastAuto))||(syncOn()&&fresh(syncCfg.last))||fresh(num(localStorage.getItem('wsBkSnooze')))||!S.stock.length&&!S.sales.length;
+  if(quiet){if(b.classList.contains('bk'))banner('');b.classList.remove('bk');return}
+  if(b.classList.contains('bk'))return;
+  banner(`<span>Your records are only on this ${ONDEV?'phone':'device'}. Make a backup so they’re safe if it’s lost or reset.</span><span class="bkb"><button type="button" class="sm pri" id="bkNow">Back up now</button><button type="button" class="sm ghost" id="bkLater">Not now</button></span>`);b.classList.add('bk');
+  $('#bkNow').onclick=()=>backupToDrive();$('#bkLater').onclick=()=>{try{localStorage.setItem('wsBkSnooze',String(Date.now()))}catch(e){}banner('');b.classList.remove('bk')}}
 const loadScript=(()=>{const c={};return u=>c[u]||(c[u]=new Promise((ok,no)=>{const s=document.createElement('script');s.src=u;const tm=setTimeout(()=>s.onerror(),15000);s.onload=()=>{clearTimeout(tm);ok()};s.onerror=()=>{clearTimeout(tm);s.remove();delete c[u];no(new Error('load'))};document.head.append(s)}))})();
 const ONDEV=location.host==='appassets.androidplatform.net';const JSPDF=[...(ONDEV?['lib/jspdf.umd.min.js']:[]),'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js','https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js'],QRLIB=[...(ONDEV?['lib/qrcode.min.js']:[]),'https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js','https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js'];
 const loadAny=async us=>{for(const u of us){try{await loadScript(u);return}catch(e){}}throw new Error('load')};
@@ -1041,28 +1085,114 @@ const loadAny=async us=>{for(const u of us){try{await loadScript(u);return}catch
 /* equipment added from an invoice in an older version may be missing its workshop: take it from the order line */
 let areaFixed=false;async function fixAreas(){if(areaFixed||!S.stock.length)return;areaFixed=true;if(noLap())return;
   for(const x of S.stock.filter(x=>x.cat==='equip'&&!x.area&&x.led)){const l=byId('ledger',x.led);if(l&&l.oArea)try{await put('stock',{...x,area:l.oArea})}catch(e){}}}
-function loadLocal(){DV++;try{const j=JSON.parse(localStorage.getItem('lapi')||'null');if(j){[...COLS,'photos'].forEach(c=>S[c]=j[c]||[]);S.settings={...S.settings,...(j.settings||{})}}}catch(e){}}
+/* ---- record storage ----
+   Each record is kept as its own entry in IndexedDB, so saving a change writes just that record, and
+   there's room for many years of records. localStorage is only a fallback where IndexedDB isn't
+   available (it holds everything as one block, up to about 5 MB). */
+/* test copies opened straight from a file also keep a plain copy in localStorage, so test scripts can read it */
+const LS_MIRROR=location.protocol==='file:'&&!window.__noMirror;
+let idbMode=false,recsReady=true,dirtyAll=true,stBusy=null,stAgain=false,ordMax=0;
+const dirtyC=new Set(),dirtyR=new Map(),dirtyDel=new Set(),ordOf=new Map();
+let bfIdx=null,bfDV=-1;const byIdFast=(c,id)=>{if(dirtyR.size<40&&!bfIdx)return byId(c,id);if(bfDV!==DV||!bfIdx){bfIdx={};bfDV=DV}if(!bfIdx[c])bfIdx[c]=new Map((S[c]||[]).map(x=>[x.id,x]));return bfIdx[c].get(id)};
+const markR=(c,id)=>{const k=c+'|'+id;dirtyR.set(k,[c,id]);dirtyDel.delete(k)};
+const markDel=(c,id)=>{const k=c+'|'+id;dirtyDel.add(k);dirtyR.delete(k)};
+const RDB=(()=>{let dbp=null;
+  const open=()=>dbp||(dbp=new Promise((ok,no)=>{try{const r=indexedDB.open('workshop-records',2);
+    r.onupgradeneeded=()=>{const d=r.result;if(!d.objectStoreNames.contains('kv'))d.createObjectStore('kv');if(!d.objectStoreNames.contains('recs'))d.createObjectStore('recs')};
+    r.onsuccess=()=>{const d=r.result;d.onversionchange=()=>{try{d.close()}catch(e){}dbp=null};ok(d)};r.onerror=()=>{dbp=null;no(r.error)};r.onblocked=()=>{dbp=null;no(new Error('storage busy'))}}catch(e){dbp=null;no(e)}}));
+  /* runs fn inside one transaction; whatever fn returns (a function is called once it has finished) is the result */
+  const tx=(stores,mode,fn)=>open().then(d=>new Promise((ok,no)=>{let t,out;try{t=d.transaction(stores,mode);out=fn(t)}catch(e){no(e);try{t&&t.abort()}catch(x){}return}
+    t.oncomplete=()=>{try{ok(typeof out==='function'?out():out)}catch(e){no(e)}};t.onerror=()=>no(t.error);t.onabort=()=>no(t.error||new Error('storage aborted'))}));
+  return{tx}})();
+/* reads everything; returns false if this device's IndexedDB doesn't hold the records */
+async function loadIDB(){const o=await RDB.tx(['kv','recs'],'readonly',t=>{const kv=t.objectStore('kv'),rs=t.objectStore('recs'),a=kv.getAll(),ak=kv.getAllKeys(),b=rs.getAll(),bk=rs.getAllKeys();
+    return()=>({kv:Object.fromEntries(ak.result.map((k,i)=>[k,a.result[i]])),keys:bk.result,vals:b.result})});
+  if(o.kv.fmt===2){dirtyAll=false;const tmp={};o.keys.forEach((k,i)=>{const c=k.slice(0,k.indexOf('|')),v=o.vals[i];(tmp[c]||(tmp[c]=[])).push(v);ordOf.set(k,v.o);if(v.o>ordMax)ordMax=v.o});
+    [...COLS,'photos'].forEach(c=>{S[c]=(tmp[c]||[]).sort((x,y)=>x.o-y.o).map(v=>v.r)});if(o.kv.settings)S.settings={...S.settings,...o.kv.settings};return true}
+  /* the earlier large-records format: one block per kind of record */
+  if(o.kv.stock||o.kv.sales||o.kv.settings){[...COLS,'photos'].forEach(c=>{if(o.kv[c])S[c]=JSON.parse(o.kv[c])});if(o.kv.settings)S.settings={...S.settings,...JSON.parse(o.kv.settings)};return 'old'}
+  return false}
+/* A small journal in localStorage holds each change until IndexedDB confirms it's written, so a change
+   made just before the app is closed is never lost. It's replayed when the app next opens. */
+const PENDK='wsPend';let pend={r:{},c:{},s:null},pendN=0;
+function pendWrite(){try{if(!Object.keys(pend.r).length&&!Object.keys(pend.c).length&&!pend.s)localStorage.removeItem(PENDK);else localStorage.setItem(PENDK,JSON.stringify(pend))}catch(e){/* too big to keep a copy of whole sections: keep just the single changes */try{localStorage.setItem(PENDK,JSON.stringify({r:pend.r,c:{},s:pend.s}))}catch(x){try{localStorage.removeItem(PENDK)}catch(y){}}}}
+function pendReplay(){let j=null;try{j=JSON.parse(localStorage.getItem(PENDK)||'null')}catch(e){}if(!j)return false;
+  Object.entries(j.c||{}).forEach(([c,a])=>{if(Array.isArray(a)&&(COLS.includes(c)||c==='photos')){S[c]=a;dirtyC.add(c)}});
+  Object.entries(j.r||{}).forEach(([k,r])=>{const i=k.indexOf('|'),c=k.slice(0,i),id=k.slice(i+1);if(!COLS.includes(c)&&c!=='photos')return;
+    const a=S[c],x=a.findIndex(o=>o.id===id);if(r){x>=0?a[x]=r:a.push(r);markR(c,id)}else if(x>=0){a.splice(x,1);markDel(c,id)}});
+  if(j.s){S.settings={...S.settings,...j.s};dirtyC.add('settings')}pend=j.r||j.c||j.s?{r:j.r||{},c:j.c||{},s:j.s||null}:pend;return true}
+/* writes what changed since the last save, all in one transaction */
+function saveIDB(opt){if(!recsReady&&!(opt&&opt.migrate))return Promise.resolve();
+  if(!(opt&&opt.migrate)){/* journal first, even if a write is already under way */let ch=false;dirtyC.forEach(c=>{if(c!=='settings'){pend.c[c]=S[c]||[];ch=true}});dirtyR.forEach(([c,id],k)=>{pend.r[k]=byIdFast(c,id)||null;ch=true});dirtyDel.forEach(k=>{pend.r[k]=null;ch=true});
+    if(dirtyAll||dirtyC.has('settings')){pend.s=S.settings;ch=true}if(ch)pendWrite()}
+  if(stBusy){stAgain=true;return stBusy}
+  const all=dirtyAll,cols=new Set(all?COLS:[...dirtyC].filter(c=>c!=='settings')),setts=all||dirtyC.has('settings'),recs=[...dirtyR.values()],dels=[...dirtyDel];
+  dirtyAll=false;dirtyC.clear();dirtyR.clear();dirtyDel.clear();if(all)cols.add('photos');
+  if(!cols.size&&!setts&&!recs.length&&!dels.length&&!(opt&&opt.migrate))return Promise.resolve();
+  const jr={},jc={};if(!(opt&&opt.migrate)){cols.forEach(c=>{if(c in pend.c)jc[c]=pend.c[c]});recs.forEach(([c,id])=>{const k=c+'|'+id;if(!cols.has(c))jr[k]=k in pend.r?pend.r[k]:byIdFast(c,id)||null});dels.forEach(k=>{jr[k]=null})}
+  const jS=S.settings;
+  const back=()=>{if(all)dirtyAll=true;cols.forEach(c=>dirtyC.add(c));if(setts)dirtyC.add('settings');recs.forEach(([c,id])=>markR(c,id));dels.forEach(k=>{if(!dirtyR.has(k))dirtyDel.add(k)})};
+  stBusy=RDB.tx(['kv','recs'],'readwrite',t=>{const rs=t.objectStore('recs'),kv=t.objectStore('kv');
+      cols.forEach(c=>{rs.delete(IDBKeyRange.bound(c+'|',c+'|￿'));(S[c]||[]).forEach((r,i)=>{if(!r||r.id==null)return;const k=c+'|'+r.id;ordOf.set(k,i);rs.put({o:i,r},k)});if((S[c]||[]).length>ordMax)ordMax=S[c].length});
+      const find=(c,id)=>{const k=c+'|'+id;return k in jr?jr[k]:byIdFast(c,id)};
+      recs.forEach(([c,id])=>{if(cols.has(c))return;const r=find(c,id);const k=c+'|'+id;if(!r){rs.delete(k);ordOf.delete(k);return}let o=ordOf.get(k);if(o==null){o=++ordMax;ordOf.set(k,o)}rs.put({o,r},k)});
+      dels.forEach(k=>{if(!cols.has(k.slice(0,k.indexOf('|'))))rs.delete(k);ordOf.delete(k)});
+      if(setts)kv.put(S.settings,'settings');
+      if(opt&&opt.migrate){kv.put(2,'fmt');[...COLS,'photos'].forEach(c=>kv.delete(c))}})
+    .then(()=>{/* written: drop these from the journal unless they've changed again since */if(opt&&opt.migrate)return;Object.keys(jr).forEach(k=>{if(pend.r[k]===jr[k])delete pend.r[k]});Object.keys(jc).forEach(c=>{if(pend.c[c]===jc[c])delete pend.c[c]});if(setts&&pend.s===jS)pend.s=null;pendWrite()})
+    .catch(e=>{back();if(opt&&opt.migrate)throw e;noteErr('Saving records: '+(e&&e.message||e),'store',1);toast('Couldn’t save just now. It will try again in a moment.');setTimeout(()=>saveLocal(true),5000)})
+    .finally(()=>{stBusy=null;if(stAgain){stAgain=false;saveIDB()}});
+  return stBusy}
+/* first start with this version: copies the records into IndexedDB, then leaves only a marker in localStorage */
+async function toIDB(){dirtyAll=true;try{await saveIDB({migrate:true});if(!LS_MIRROR)localStorage.setItem('lapi',JSON.stringify({__idb:2}));idbMode=true;savedLen=0;
+    try{if(!ONDEV&&navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}}
+  catch(e){idbMode=false;dirtyAll=true;noteErr('Moving records: '+(e&&e.message||e),'store',1)}}
+function storeFail(){let o=document.getElementById('storeFail');if(o)return;o=document.createElement('div');o.id='storeFail';o.setAttribute('role','alertdialog');
+  o.style.cssText='position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:24px;background:var(--bg,#fff);color:var(--ink,#222);text-align:center;font:16px/1.5 system-ui,sans-serif';
+  o.innerHTML='<div style="max-width:420px"><h2 style="margin:0 0 8px">Your records couldn’t be opened</h2><p>They’re still safe on this device. Close the app completely (swipe it away), then open it again. If this keeps happening, restart the phone.</p><button type="button" class="pri" style="margin-top:12px;min-height:44px;padding:0 20px">Try again</button></div>';
+  o.querySelector('button').onclick=()=>location.reload();document.body.appendChild(o)}
+async function loadStore(){for(let i=0;i<3;i++){try{return await loadStore1()}catch(e){if(i===2){storeFail();throw e}await new Promise(r=>setTimeout(r,800))}}}
+async function loadStore1(){try{const r=await loadIDB();
+    if(r==='old'){await toIDB();if(!idbMode)throw new Error('could not move')}
+    else if(r&&pendReplay()){recsReady=true;idbMode=true;await saveIDB()}
+    else if(!r){/* the marker says IndexedDB, but it's empty: it was cleared by the system */if(pendReplay()){recsReady=true;idbMode=true;dirtyAll=true;await saveIDB({migrate:true})}$('#banner').dataset.other='1';banner('Your records couldn’t be found on this device. If you have a backup, open Settings → Backup → Restore.',1)}
+    idbMode=true}
+  catch(e){noteErr('Loading records: '+(e&&e.message||e),'store',1);toast('Couldn’t open your records. Close the app and open it again.');throw e}
+  recsReady=true;DV++}
+function loadLocal(){DV++;let j=null;try{j=JSON.parse(localStorage.getItem('lapi')||'null')}catch(e){}
+  if(j&&j.__idb){idbMode=true;recsReady=false;return loadStore()}
+  if(j){[...COLS,'photos'].forEach(c=>S[c]=j[c]||[]);S.settings={...S.settings,...(j.settings||{})}}
+  if(!db&&window.indexedDB&&!window.__lsOnly){recsReady=false;return (async()=>{
+    /* no records in localStorage: if the database already has them (the marker was lost), use those rather than starting empty */
+    if(!j){try{const r=await loadIDB();if(r===true){idbMode=true;pendReplay();if(!LS_MIRROR)localStorage.setItem('lapi',JSON.stringify({__idb:2}));noteErr('Storage: marker was missing, records loaded from the database','store',1);recsReady=true;DV++;if(dirtyR.size||dirtyDel.size||dirtyC.size)saveIDB();return}}catch(e){}}
+    await toIDB()})().finally(()=>{recsReady=true})}}
 /* photos live in IndexedDB, which has far more room than the main record store */
 const PDB=(()=>{let dbp=null;const open=()=>dbp||(dbp=new Promise((ok,no)=>{try{const r=indexedDB.open('workshop-photos',2);r.onupgradeneeded=()=>{const d=r.result,st=d.objectStoreNames.contains('photos')?r.transaction.objectStore('photos'):d.createObjectStore('photos',{keyPath:'id'});if(!st.indexNames.contains('ref'))st.createIndex('ref','ref')};r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)}catch(e){no(e)}}));
   const tx=(mode,fn)=>open().then(d=>new Promise((ok,no)=>{const t=d.transaction('photos',mode),st=t.objectStore('photos');const res=fn(st);t.oncomplete=()=>ok(res&&res.result);t.onerror=()=>no(t.error);t.onabort=()=>no(t.error)}));
   const metas=()=>open().then(d=>new Promise((ok,no)=>{const out=[],q=d.transaction('photos').objectStore('photos').openCursor();q.onsuccess=()=>{const c=q.result;if(c){out.push(pMeta(c.value));c.continue()}else ok(out)};q.onerror=()=>no(q.error)}));
-  return{ok:false,metas,byRef:ref=>tx('readonly',st=>st.index('ref').getAll(ref)),all:()=>tx('readonly',st=>st.getAll()),clear:()=>tx('readwrite',st=>st.clear()),put:p=>tx('readwrite',st=>st.put(p)),putMany:ps=>tx('readwrite',st=>{ps.forEach(p=>st.put(p))}),del:id=>tx('readwrite',st=>st.delete(id))}})();
+  const metasOf=ids=>open().then(d=>new Promise((ok,no)=>{const out=[],st=d.transaction('photos').objectStore('photos');let n=ids.length;if(!n)return ok(out);ids.forEach(id=>{const q=st.get(id);q.onsuccess=()=>{if(q.result)out.push(pMeta(q.result));if(--n===0)ok(out)};q.onerror=()=>{if(--n===0)ok(out)}})}));
+  return{ok:false,metas,metasOf,keys:()=>tx('readonly',st=>st.getAllKeys()),byRef:ref=>tx('readonly',st=>st.index('ref').getAll(ref)),all:()=>tx('readonly',st=>st.getAll()),clear:()=>tx('readwrite',st=>st.clear()),put:p=>tx('readwrite',st=>st.put(p)),putMany:ps=>tx('readwrite',st=>{ps.forEach(p=>st.put(p))}),del:id=>tx('readwrite',st=>st.delete(id))}})();
 /* only a small summary of each photo is kept in memory; the image itself is read when needed */
 const pMeta=p=>({id:p.id,ref:p.ref,kind:p.kind,date:p.date,size:p.size||(p.data||'').length});
-async function loadPhotosLocal(){try{const legacy=S.photos.filter(p=>p.data);const all=await PDB.metas();PDB.ok=true;
-  if(legacy.length){const have=new Set(all.map(p=>p.id));const add=legacy.filter(p=>!have.has(p.id));if(add.length)await PDB.putMany(add);S.photos=[...all,...add.map(pMeta)]}else S.photos=all;
-  if(legacy.length)saveLocal()}catch(e){PDB.ok=false}}
-async function photoSave(p){if(PDB.ok){try{await PDB.put(p);S.photos.push(pMeta(p));syncMark('photos',p.id);return}catch(e){PDB.ok=false}}S.photos.push(p);saveLocal();syncMark('photos',p.id)}
-async function photoDel(id){S.photos=S.photos.filter(p=>p.id!==id);syncMark('photos',id,Date.now(),true);if(PDB.ok){try{await PDB.del(id);return}catch(e){}}saveLocal()}
-let svT;const saveSoon=()=>{clearTimeout(svT);svT=setTimeout(saveLocal,60)};addEventListener('pagehide',()=>{if(svT){clearTimeout(svT);saveLocal()}});
-let savedLen=0;function saveLocal(){svT=0;try{const o=PDB.ok?{...S,photos:[]}:S,j=JSON.stringify(o);localStorage.setItem('lapi',j);savedLen=j.length}catch(e){toast('Storage is full. Make a backup, then remove some old photos')}}
+/* Photo summaries are kept with the records, so opening the app never has to read the images themselves.
+   Only photos without a summary (after updating from an older version) are read once to make one. */
+async function loadPhotosLocal(){try{const keys=await PDB.keys();PDB.ok=true;const legacy=S.photos.filter(p=>p.data);
+  if(legacy.length){const have=new Set(keys);const add=legacy.filter(p=>!have.has(p.id));if(add.length)await PDB.putMany(add);S.photos=S.photos.map(p=>p.data?pMeta(p):p);add.forEach(p=>keys.push(p.id));dirtyC.add('photos');saveLocal(true)}
+  const known=new Set(S.photos.map(p=>p.id)),miss=keys.filter(k=>!known.has(k));
+  if(miss.length){for(let i=0;i<miss.length;i+=50){const ms=await PDB.metasOf(miss.slice(i,i+50));S.photos.push(...ms);ms.forEach(m=>markR('photos',m.id))}saveLocal(true)}}
+  catch(e){PDB.ok=false}}
+async function photoSave(p){if(PDB.ok){try{await PDB.put(p);S.photos.push(pMeta(p));markR('photos',p.id);saveSoon();syncMark('photos',p.id);return}catch(e){PDB.ok=false}}S.photos.push(p);saveLocal();syncMark('photos',p.id)}
+async function photoDel(id){S.photos=S.photos.filter(p=>p.id!==id);markDel('photos',id);saveSoon();syncMark('photos',id,Date.now(),true);if(PDB.ok){try{await PDB.del(id);return}catch(e){}}saveLocal()}
+let svT;const saveSoon=()=>{clearTimeout(svT);svT=setTimeout(()=>saveLocal(true),60)};addEventListener('pagehide',()=>{if(svT){clearTimeout(svT);saveLocal(true)}});
+let savedLen=0;function saveLocal(known){svT=0;if(!known)dirtyAll=true;if(!recsReady)return;if(idbMode){saveIDB();if(LS_MIRROR)try{localStorage.setItem('lapi',JSON.stringify(PDB.ok?{...S,photos:[]}:S))}catch(e){}return}
+  try{const o=PDB.ok?{...S,photos:[]}:S,j=JSON.stringify(o);localStorage.setItem('lapi',j);savedLen=j.length;dirtyAll=false;dirtyC.clear();dirtyR.clear();dirtyDel.clear()}catch(e){toast('Storage is full. Make a backup, then remove some old photos')}}
 const clean=o=>{const b={...o};delete b.id;delete b._new;Object.keys(b).forEach(k=>b[k]===undefined&&delete b[k]);return b};
 async function put(c,obj){
   const undoPrev=obj.id?byId(c,obj.id):null;
   if(!lockBypass&&LOCKC.includes(c)&&(S.settings.locked||[]).length){const old=obj.id&&byId(c,obj.id);if(isLockedDate(obj.date)||isLockedDate(old?.date)){toast('That financial year is locked. Unlock it in Tax time to make changes.');throw new Error('That financial year is locked')}}
   const id=obj.id||uid();const body=clean(obj);body.updated=Date.now();
   if(db){try{await db.collection(c).doc(id).set(body)}catch(e){toast(e.code==='quota_exceeded'?'Storage is full':'Could not save, please try again');throw e}}
-  else{const a=S[c],i=a.findIndex(x=>x.id===id),r={id,...body};i>=0?a[i]=r:a.push(r);DV++;saveSoon();renderSoon();syncMark(c,id,body.updated)}
+  else{const a=S[c],i=a.findIndex(x=>x.id===id),r={id,...body};i>=0?a[i]=r:a.push(r);DV++;markR(c,id);saveSoon();renderSoon();syncMark(c,id,body.updated)}
   undoNote(c,id,undoPrev,true);
   return id;
 }
@@ -1070,25 +1200,26 @@ async function remove(c,id){
   if(!lockBypass&&LOCKC.includes(c)&&isLockedDate(byId(c,id)?.date)){toast('That financial year is locked. Unlock it in Tax time to make changes.');return false}
   undoNote(c,id,byId(c,id),false);
   if(db){try{await db.collection(c).doc(id).delete()}catch(e){toast('Could not delete')}}
-  else{const was=byId(c,id);S[c]=S[c].filter(x=>x.id!==id);DV++;saveSoon();renderSoon();if(!syncIsDemo(c,was))syncMark(c,id,Date.now(),true)}
+  else{const was=byId(c,id);S[c]=S[c].filter(x=>x.id!==id);DV++;markDel(c,id);saveSoon();renderSoon();if(!syncIsDemo(c,was))syncMark(c,id,Date.now(),true)}
 }
 async function del(c,id,label,after){const rec=byId(c,id);if(await remove(c,id)===false)return;if(after)await after(rec);
   toast((label||'Item')+' deleted',{label:'Undo',fn:async()=>{await put(c,rec);if(after&&after.undo)await after.undo(rec);toast('Restored')}})}
 async function putSettings(o){S.settings={...S.settings,...o};DV++;if(!db&&Object.keys(o).some(k=>!SYNC_LOCAL.includes(k))){S.settings._u=Date.now();syncMark('_settings','main',S.settings._u)}
-  if(db){try{await db.doc('settings/main').set(S.settings)}catch(e){toast('Could not save settings')}}else saveLocal();render();calc()}
+  if(db){try{await db.doc('settings/main').set(S.settings)}catch(e){toast('Could not save settings')}}else{dirtyC.add('settings');saveLocal(true)}render();calc()}
 async function adjustStock(map,why){for(const[id,d]of Object.entries(map)){if(!d)continue;const r=byId('stock',id);if(!r)continue;
   const q=Math.max(0,+(num(r.qty)+d).toFixed(4));const log=[{d:today(),q:+d.toFixed(4),w:why},...(r.log||[])].slice(0,80);await put('stock',{...r,qty:q,log})}}
-/* ================= SYNC (phone ⇄ computer through the owner's Google Drive) =================
-   Each device keeps its own full copy and works offline. Changes are swapped with a small script
-   running in the owner's Google account ("Workshop sync" folder in their Drive). Records are
-   encrypted here with a key made from the owner's passphrase, so Drive only stores scrambled data.
+/* ================= SYNC (phone ⇄ computer through the owner's own Cloudflare worker) =================
+   Each device keeps its own full copy and works offline. Changes are swapped through a small worker
+   running in the owner's free Cloudflare account, with a D1 database. Records are encrypted here with
+   a key made from the owner's passphrase, so the worker only stores scrambled data.
    A record changed on two devices before they sync: the later change wins. */
 const SYNC_LOCAL=['rem','lastAuto','lastAutoSig','autoBk','lastBackup','lock','textSize','density','mode','motion','demoOffer','demoOn','sqOn','sqApp','_u'];
 const SYNCK='wsSync',SYNCD='wsSyncDirty',SYNCP='wsSyncPh';
 const syncJ=(k,d)=>{try{return JSON.parse(localStorage.getItem(k)||'null')??d}catch(e){return d}};
 const syncW=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
 let syncCfg=syncJ(SYNCK,null),syncDirty=syncJ(SYNCD,{}),syncPh=syncJ(SYNCP,{}),syncApplying=false,syncBusy=false,syncT=0,syncKeyP=null,syncStatus='',syncHello=false;
-const syncOn=()=>!db&&!!(syncCfg&&syncCfg.on&&syncCfg.url&&syncCfg.key);
+const syncOld=()=>!!(syncCfg&&syncCfg.on&&/script\.google/.test(syncCfg.url||''));
+const syncOn=()=>!db&&!!(syncCfg&&syncCfg.on&&syncCfg.url&&syncCfg.key)&&!syncOld();
 const syncIsDemo=(c,x)=>!!x&&(x.demo||String(x.id||'').startsWith('demo-'));
 function syncMark(c,id,u,del){if(!syncOn()||syncApplying||!id)return;if(!del&&c!=='_settings'&&c!=='photos'&&syncIsDemo(c,byId(c,id)))return;if(String(id).startsWith('demo-'))return;
   syncDirty[c+'|'+id]={u:u||Date.now(),d:del?1:0};syncW(SYNCD,syncDirty);syncSoon(6000)}
@@ -1098,16 +1229,27 @@ const sEnc=new TextEncoder(),sDec=new TextDecoder();
 const sB64=u8=>{let s='';for(let i=0;i<u8.length;i+=32768)s+=String.fromCharCode.apply(null,u8.subarray(i,i+32768));return btoa(s)};
 const sUnB64=b=>{const s=atob(b),u=new Uint8Array(s.length);for(let i=0;i<s.length;i++)u[i]=s.charCodeAt(i);return u};
 async function syncDerive(pass,salt){const base=await crypto.subtle.importKey('raw',sEnc.encode(pass),'PBKDF2',false,['deriveBits']);
-  const bits=new Uint8Array(await crypto.subtle.deriveBits({name:'PBKDF2',salt:sEnc.encode('workshop-sync|'+salt),iterations:210000,hash:'SHA-256'},base,512));
+  const bits=new Uint8Array(await crypto.subtle.deriveBits({name:'PBKDF2',salt:sEnc.encode('workshop-sync|'+salt),iterations:600000,hash:'SHA-256'},base,512));
   const tok=new Uint8Array(await crypto.subtle.digest('SHA-256',bits.slice(32)));return{key:sB64(bits.slice(0,32)),token:[...tok].map(b=>b.toString(16).padStart(2,'0')).join('')}}
 const syncKey=()=>syncKeyP||(syncKeyP=crypto.subtle.importKey('raw',sUnB64(syncCfg.key),'AES-GCM',false,['encrypt','decrypt']));
 async function sLock(obj){const iv=crypto.getRandomValues(new Uint8Array(12)),ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},await syncKey(),sEnc.encode(JSON.stringify(obj))));const o=new Uint8Array(12+ct.length);o.set(iv);o.set(ct,12);return sB64(o)}
 async function sOpen(x){const b=sUnB64(x);return JSON.parse(sDec.decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:b.slice(0,12)},await syncKey(),b.slice(12))))}
 /* ---- talking to the script ---- */
-async function syncCall(req,url){const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),120000);
-  try{const r=await fetch(url||syncCfg.url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(req),signal:ctl.signal,redirect:'follow'});
-    const t=await r.text();let j;try{j=JSON.parse(t)}catch(e){throw new Error(/<html/i.test(t)?'not the script':'bad reply')}if(!j.ok)throw new Error(j.error||'failed');return j}
-  finally{clearTimeout(tm)}}
+/* On the Android app the phone sends sync requests itself: the web view's cross-site rules can stop them otherwise. */
+const httpWait={};window.httpDone=(id,code)=>{const f=httpWait[id];if(f)f(code)};
+function nativePost(url,body){return new Promise((res,rej)=>{const id='h'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+  const tm=setTimeout(()=>{delete httpWait[id];try{AndroidBridge.httpForget(id)}catch(e){}rej(new Error('net: timed out'))},150000);
+  httpWait[id]=code=>{clearTimeout(tm);delete httpWait[id];let t='',p;try{do{p=AndroidBridge.httpTake(id,t.length,400000);t+=p}while(p.length===400000)}finally{try{AndroidBridge.httpForget(id)}catch(e){}}
+    if(code<0)rej(new Error('net: '+t));else res({status:code,text:t})};
+  try{AndroidBridge.httpPost(id,url,body)}catch(e){clearTimeout(tm);delete httpWait[id];rej(new Error('net: '+e.message))}})}
+const nativeHttp=()=>typeof AndroidBridge!=='undefined'&&typeof AndroidBridge.httpPost==='function';
+async function syncCall(req,url){url=url||syncCfg.url;if(req.acct==null&&syncCfg&&syncCfg.acct)req={...req,acct:syncCfg.acct};const body=JSON.stringify(req);let status=0,t='';
+  if(nativeHttp()){({status,text:t}=await nativePost(url,body))}
+  else{const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),120000);
+    try{const r=await fetch(url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body,signal:ctl.signal,redirect:'follow'});status=r.status;t=await r.text()}
+    catch(e){throw new Error('net: '+(e&&e.message||e))}finally{clearTimeout(tm)}}
+  let j;try{j=JSON.parse(t)}catch(e){throw new Error(status===404?'not found':/<html/i.test(t)?'not the script':'bad reply ('+status+')')}
+  if(!j.ok)throw new Error(j.error||'failed');return j}
 /* ---- what this device has ---- */
 function syncLocalKeys(){const out=[];COLS.forEach(c=>(S[c]||[]).forEach(x=>{if(!syncIsDemo(c,x))out.push([c+'|'+x.id,num(x.updated)||1])}));
   S.photos.forEach(p=>{if(!String(p.id).startsWith('demo-'))out.push(['photos|'+p.id,num(p.date&&Date.parse(p.date))||1])});out.push(['_settings|main',num(S.settings._u)||1]);return out}
@@ -1125,44 +1267,57 @@ let syncGet=[],syncInL=[];
 const SYNCL='wsSyncLog';let syncLog=syncJ(SYNCL,[]);
 const syncLbl=(c,x,del)=>c==='_settings'?'Settings':c==='photos'?(del?'Photo removed':'Photo'):(del?'Deleted ':'')+(UNDO_NAMES[c]?undoName(c,1).replace(/^./,ch=>ch.toUpperCase()):'Record')+(x?': '+undoRecName(c,x):'');
 async function syncApply(recs,{keepNewer=true}={}){if(!recs.length)return 0;let n=0;syncApplying=true;
-  try{for(const r of recs){const i=r.k.indexOf('|'),c=r.k.slice(0,i),id=r.k.slice(i+1),mine=syncDirty[r.k];
+  let bad=0;
+  try{for(const r of recs){try{const i=r.k.indexOf('|'),c=r.k.slice(0,i),id=r.k.slice(i+1),mine=syncDirty[r.k];
       if(keepNewer&&mine&&mine.u>r.u)continue;
-      if(c==='_settings'){if(r.d)continue;const o=await sOpen(r.x);syncInL.push(syncLbl(c));const keep={};SYNC_LOCAL.forEach(k=>{if(k in S.settings)keep[k]=S.settings[k]});S.settings={...o,...keep,_u:r.u};n++;continue}
-      if(c==='photos'){if(r.d){if(S.photos.some(p=>p.id===id)){S.photos=S.photos.filter(p=>p.id!==id);try{if(PDB.ok)await PDB.del(id)}catch(e){}n++}continue}
-        const m=await sOpen(r.x);if(!S.photos.some(p=>p.id===id)){S.photos.push(m);syncGet.push(m);n++;syncInL.push(syncLbl(c))}syncPh[id]=1;continue}
+      if(c==='_settings'){if(r.d)continue;const o=await sOpen(r.x);syncInL.push(syncLbl(c));const keep={};SYNC_LOCAL.forEach(k=>{if(k in S.settings)keep[k]=S.settings[k]});S.settings={...o,...keep,_u:r.u};dirtyC.add('settings');n++;continue}
+      if(c==='photos'){if(r.d){if(S.photos.some(p=>p.id===id)){S.photos=S.photos.filter(p=>p.id!==id);markDel('photos',id);try{if(PDB.ok)await PDB.del(id)}catch(e){}n++}continue}
+        const m=await sOpen(r.x);if(!S.photos.some(p=>p.id===id)){S.photos.push(m);markR('photos',id);syncGet.push(m);n++;syncInL.push(syncLbl(c))}syncPh[id]=1;continue}
       if(!COLS.includes(c))continue;
-      if(r.d){const was=byId(c,id);if(was){S[c]=S[c].filter(x=>x.id!==id);n++;syncInL.push(syncLbl(c,was,1))}continue}
-      const o=await sOpen(r.x);o.id=id;o.updated=r.u;syncInL.push(syncLbl(c,o));const a=S[c],j=a.findIndex(x=>x.id===id);j>=0?a[j]=o:a.push(o);n++}}
+      if(r.d){const was=byId(c,id);if(was){S[c]=S[c].filter(x=>x.id!==id);markDel(c,id);n++;syncInL.push(syncLbl(c,was,1))}continue}
+      const o=await sOpen(r.x);o.id=id;o.updated=r.u;syncInL.push(syncLbl(c,o));const a=S[c],j=a.findIndex(x=>x.id===id);j>=0?a[j]=o:a.push(o);markR(c,id);n++}
+    catch(e){/* one damaged record mustn't stop the rest */bad++}}}
   finally{syncApplying=false}
-  if(n){DV++;saveLocal();syncW(SYNCP,syncPh);render();calc?.()}return n}
+  if(bad)noteErr(`Sync: ${bad} record${bad===1?'':'s'} couldn’t be read and ${bad===1?'was':'were'} skipped`,'sync',1);
+  if(n){DV++;saveLocal(true);syncW(SYNCP,syncPh);render();calc?.()}return n}
 async function syncPhotos(){while(syncGet.length&&syncOn()){const m=syncGet[0];
     try{const j=await syncCall({op:'getPhoto',token:syncCfg.token,id:m.id});const d=await sOpen(j.x);const p={...m,data:d.data};
       if(PDB.ok)await PDB.put(p);else{const k=S.photos.findIndex(x=>x.id===m.id);if(k>=0)S.photos[k]=p;saveLocal()}}
     catch(e){if(!/missing/.test(e.message))break}syncGet.shift()}}
+/* ---- sending and fetching in manageable pieces ---- */
+async function syncPushAll(list,force,outL){const sent={},back=[];let batch=[],size=0;
+  const flush=async()=>{if(!batch.length)return;const j=await syncCall({op:'push',token:syncCfg.token,force:force?1:0,changes:batch});(j.back||[]).forEach(r=>back.push(r));batch=[];size=0};
+  for(const[k,e]of list){const p=await syncPayload(k,e);if(!p)continue;batch.push(p);size+=(p.x||'').length+k.length+40;sent[k]=e.u;
+    if(outL){const i=k.indexOf('|'),c=k.slice(0,i);outL.push(syncLbl(c,e.d?null:byId(c,k.slice(i+1)),e.d))}
+    if(size>600000||batch.length>=300)await flush()}
+  await flush();return{sent,back}}
+async function syncPullAll(since){let after=null,seq=null;const recs=[];
+  for(let n=0;n<2000;n++){const j=await syncCall({op:'pull',token:syncCfg.token,since,after});if(seq==null)seq=j.seq;recs.push(...j.recs);if(!j.more)break;after=j.next}
+  return{recs,seq:seq??since}}
 /* ---- one round: send what changed here, take what changed elsewhere ---- */
-async function syncNow(manual){if(!syncOn()||syncBusy)return;if(navigator.onLine===false){syncSet('offline');return}
+async function syncNow(manual){if(!syncOn()||syncBusy||!recsReady)return;if(navigator.onLine===false){syncSet('offline');return}
   syncBusy=true;clearTimeout(syncT);syncSet('busy');
   try{if(!syncHello){const h=await syncCall({op:'hello'});syncHello=true;
-      if(!h.started&&num(syncCfg.since)>0){/* the Drive copy was removed: send everything again */syncCfg.since=0;syncLocalKeys().forEach(([k,u])=>{if(!syncDirty[k])syncDirty[k]={u,d:0}});syncW(SYNCD,syncDirty)}}
-    const sent={},changes=[],outL=[];syncInL=[];
-    if(syncCfg.replace){for(const[k,u]of syncLocalKeys()){const p=await syncPayload(k,{u:Math.max(u,1)});if(p)changes.push(p)}
-      const j=await syncCall({op:'replace',token:syncCfg.token,changes});syncCfg.replace=false;syncCfg.since=j.seq;syncDirty={};syncW(SYNCD,syncDirty)}
-    else{for(const[k,e]of Object.entries(syncDirty)){const p=await syncPayload(k,e);if(p){changes.push(p);sent[k]=e.u;const i=k.indexOf('|'),c=k.slice(0,i);outL.push(syncLbl(c,e.d?null:byId(c,k.slice(i+1)),e.d))}}
-      const j=await syncCall({op:'sync',token:syncCfg.token,since:num(syncCfg.since),changes});
-      Object.entries(sent).forEach(([k,u])=>{if(syncDirty[k]&&syncDirty[k].u===u)delete syncDirty[k]});syncW(SYNCD,syncDirty);
-      await syncApply(j.recs);syncCfg.since=j.seq}
+      if(!h.started&&num(syncCfg.since)>0){/* the online copy was removed: send everything again */syncCfg.since=0;syncPh={};syncW(SYNCP,syncPh);syncLocalKeys().forEach(([k,u])=>{if(!syncDirty[k])syncDirty[k]={u,d:0}});syncW(SYNCD,syncDirty)}}
+    const outL=[];syncInL=[];let sent={},back=[];
+    if(syncCfg.replace){const all=syncLocalKeys();await syncCall({op:'replace',token:syncCfg.token,keep:all.map(x=>x[0])});
+      ({sent}=await syncPushAll(all.map(([k,u])=>[k,{u:Math.max(u,1),d:0}]),true,null));syncCfg.replace=false;syncDirty={};syncW(SYNCD,syncDirty);syncW(SYNCK,syncCfg)}
+    else{({sent,back}=await syncPushAll(Object.entries(syncDirty),false,outL));
+      Object.entries(sent).forEach(([k,u])=>{if(syncDirty[k]&&syncDirty[k].u===u)delete syncDirty[k]});syncW(SYNCD,syncDirty)}
+    const p=await syncPullAll(num(syncCfg.since));
+    await syncApply([...back,...p.recs.filter(r=>sent[r.k]!==r.u)]);syncCfg.since=p.seq;
     if(outL.length||syncInL.length){syncLog.unshift({t:Date.now(),o:outL.length,i:syncInL.length,ol:outL.slice(0,5),il:syncInL.slice(0,5)});syncLog=syncLog.slice(0,40);syncW(SYNCL,syncLog)}
     syncCfg.last=Date.now();syncCfg.err='';if(!syncCfg.checked)syncCfg.checked=Date.now();syncW(SYNCK,syncCfg);syncSet('ok');
     if(Date.now()-num(syncCfg.checked)>30*864e5)setTimeout(()=>syncCheck(),3000);
     if(syncGet.length)syncPhotos();
     if(Object.keys(syncDirty).length)syncSoon(4000);if(manual)toast('Synced')}
-  catch(e){const m=String(e&&e.message||e);syncCfg.err=/wrong passphrase/.test(m)?'pass':/abort|fetch|network|load failed/i.test(m)?'net':m;syncW(SYNCK,syncCfg);syncSet(syncCfg.err==='net'?'offline':'error');
-    if(manual||syncCfg.err==='pass')toast(syncCfg.err==='pass'?'Sync stopped: the passphrase doesn’t match your other devices. Check it in Settings → Sync with your other devices':syncCfg.err==='net'?'Couldn’t reach your Drive. It will try again when you’re online':'Sync didn’t work: '+m);
+  catch(e){const m=String(e&&e.message||e);noteErr('Sync: '+m,'sync',1);syncCfg.err=/wrong passphrase/.test(m)?'pass':/^net:|abort|fetch|network|load failed/i.test(m)?'net':m==='no database'?'Cloudflare: the worker isn’t linked to its database (Settings → Bindings, name DB)':m;syncW(SYNCK,syncCfg);syncSet(syncCfg.err==='net'?'offline':'error');
+    if(manual||syncCfg.err==='pass')toast(syncCfg.err==='pass'?'Sync stopped: the passphrase doesn’t match your other devices. Check it in Settings → Sync with your other devices':syncCfg.err==='net'?'Couldn’t reach the sync service. It will try again when you’re online':'Sync didn’t work: '+syncCfg.err);
     if(syncCfg.err!=='pass')syncSoon(90000)}
   finally{syncBusy=false}}
-/* monthly (and on request): compare every record with the copy in Drive and fix any difference */
+/* monthly (and on request): compare every record with the online copy and fix any difference */
 async function syncCheck(manual){if(!syncOn()||syncBusy)return;syncBusy=true;if(manual)toast('Checking…');let fixed=0;
-  try{const j=await syncCall({op:'sync',token:syncCfg.token,since:0,changes:[]}),srv={};j.recs.forEach(r=>srv[r.k]=r);
+  try{const j=await syncPullAll(0),srv={};j.recs.forEach(r=>srv[r.k]=r);
     const mine=new Map(syncLocalKeys()),take=[];
     for(const r of j.recs){const u=mine.get(r.k),simple=r.k.startsWith('photos|')||r.k.startsWith('_settings|');
       if(r.d){if(u!=null&&!r.k.startsWith('_settings|')&&(simple||u<=r.u))take.push(r)}
@@ -1182,54 +1337,91 @@ function syncDetails(){const L=syncLog;
    <h3 style="margin:16px 0 6px">Recent activity</h3>
    <div class="list">${L.length?L.slice(0,25).map(g=>g.chk&&g.fixed!=null?`<div class="item" style="pointer-events:none"><div class="grow"><b>Checked ${fmtN(g.n)} records</b><br><small>${g.fixed?`Fixed ${g.fixed} difference${g.fixed===1?'':'s'}`:'Everything matched'} · ${undoAgo(g.t)}</small></div></div>`:
      `<div class="item" style="pointer-events:none"><div class="grow"><b>${[g.i?`${g.i} received`:'',g.o?`${g.o} sent`:''].filter(Boolean).join(' · ')}</b><br><small>${esc([...(g.il||[]),...(g.ol||[])].slice(0,4).join(' · '))}${(g.i+g.o)>4?' …':''} · ${undoAgo(g.t)}</small></div></div>`).join(''):'<div class="empty">Nothing yet.</div>'}</div>
-   <div class="row" style="margin-top:14px"><button type="button" id="sdSet">Change address or passphrase</button><button type="button" id="sdOff">Turn off on this device</button></div>`,'');
+   <div class="row" style="margin-top:14px">${syncCfg.code?'<button type="button" id="sdCode">Add another device</button>':''}<button type="button" id="sdOff">Turn off on this device</button></div>`,'');
   $('#sdNow').onclick=async()=>{await syncNow(true);syncDetails()};$('#sdChk').onclick=async()=>{await syncCheck(true);syncDetails()};
-  $('#sdSet').onclick=()=>syncSetup();$('#sdOff').onclick=()=>{syncOff();dlg.close()}}
-function syncSet(s){syncStatus=s;const el=$('#syncState');if(el)el.innerHTML=syncLine()}
-function syncLine(){if(!syncOn())return'Off. Your records are only on this device.';
+  if($('#sdCode'))$('#sdCode').onclick=()=>syncShowCode();$('#sdOff').onclick=()=>{syncOff();dlg.close()}}
+function syncSet(s){syncStatus=s;const el=$('#syncState');if(el)el.innerHTML=syncLine();syncChipShow()}
+/* a small sync light in the header, so it's always clear whether the devices are in step */
+function syncChipShow(){const c=$('#syncChip');if(!c)return;if(!syncOn()){c.hidden=true;return}c.hidden=false;
+  const k=syncStatus==='busy'?'busy':syncCfg.err==='pass'||(syncCfg.err&&syncCfg.err!=='net')?'bad':syncCfg.err==='net'||syncStatus==='offline'||navigator.onLine===false?'off':'ok';
+  const t={busy:'Syncing',bad:'Sync problem',off:'Offline',ok:'Synced'}[k];c.className='syncchip '+k;
+  c.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true">${k==='busy'?'<path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v4h-4"/>':k==='ok'?'<path d="M6 12.5l4 4 8-9"/>':k==='off'?'<path d="M4 4l16 16M8.5 8.6A6 6 0 0 0 6 13.5M12 20h.01M9 16.5a4 4 0 0 1 5.5-.6"/>':'<path d="M12 7v6M12 16.5v.1"/>'}</svg><span>${t}</span>`;
+  c.title=t+(syncCfg.last?' · last synced '+undoAgo(syncCfg.last):'');c.setAttribute('aria-label',c.title)}
+function syncLine(){if(syncOld())return'<b>Sync works differently now</b>, with nothing to set up. Tap <b>Turn on sync</b> to switch over. Your records stay on this device meanwhile.';if(!syncOn())return'Off. Your records are only on this device.';
   const ago=syncCfg.last?(()=>{const m=Math.round((Date.now()-syncCfg.last)/60000);return m<1?'just now':m<60?m+' min ago':fmtD(iso(new Date(syncCfg.last)))})():'not yet';
-  return syncStatus==='busy'?'Syncing…':syncCfg.err==='pass'?'<b>Stopped:</b> the passphrase doesn’t match your other devices.':syncCfg.err==='net'||syncStatus==='offline'?`Waiting for the internet. Last synced ${ago}.`:syncCfg.err?`<b>Problem:</b> ${esc(syncCfg.err)}. Last synced ${ago}.`:`On. Last synced ${ago}.`+(Object.keys(syncDirty).length?` ${Object.keys(syncDirty).length} change${Object.keys(syncDirty).length===1?'':'s'} to send.`:'')}
+  return syncStatus==='busy'?'Syncing…':syncCfg.err==='pass'?(syncCfg.code?'<b>Stopped:</b> sync was restarted with a new code on another device. Tap Turn on sync, then Join with a code.':'<b>Stopped:</b> the passphrase doesn’t match your other devices.'):syncCfg.err==='closed'?'<b>Stopped:</b> the sync server isn’t accepting new businesses right now.':syncCfg.err==='net'||syncStatus==='offline'?`Waiting for the internet. Last synced ${ago}.`:syncCfg.err?`<b>Problem:</b> ${esc(syncCfg.err)}. Last synced ${ago}.`:`On. Last synced ${ago}.`+(Object.keys(syncDirty).length?` ${Object.keys(syncDirty).length} change${Object.keys(syncDirty).length===1?'':'s'} to send.`:'')}
 /* keep in step: when the app opens, when it comes back to the front, and every couple of minutes while it's open */
 addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')syncSoon(800);else if(Object.keys(syncDirty).length)syncNow()});
 addEventListener('online',()=>syncSoon(1500));
 setInterval(()=>{if(document.visibilityState==='visible')syncNow()},120000);
 /* ---- setting it up ---- */
-async function syncConnect(url,pass){url=String(url||'').trim();if(!/^https:\/\/script\.google(usercontent)?\.com\/.+/.test(url))throw new Error('That doesn’t look like the script’s web app address. It starts with https://script.google.com/macros/s/ and ends in /exec');
-  let h;try{h=await syncCall({op:'hello'},url)}catch(e){throw new Error(/not the script/.test(e.message)?'That address opened a Google page instead of the script. Check the script is deployed with “Who has access: Anyone”':'Couldn’t reach that address. Check it, and that you’re online')}
-  const d=await syncDerive(pass,h.salt);return{h,cfg:{on:true,url,key:d.key,token:d.token,since:0,last:0,err:''}}}
-const SYNC_GUIDE=`<ol class="steps">
-<li>On your computer, open <b>script.google.com</b> and sign in with your Google account. Tap <b>New project</b>.</li>
-<li>Delete what’s there, then paste in the Workshop sync script. Tap <b>Copy script</b> below to copy it, or use the <b>Workshop sync.gs</b> file that came with this update.</li>
-<li>Tap <b>Deploy → New deployment</b>. Choose type <b>Web app</b>. Set <b>Execute as: Me</b> and <b>Who has access: Anyone</b>, then <b>Deploy</b>.</li>
-<li>Google asks you to allow access to your Drive: tap <b>Authorise access</b>, pick your account, then <b>Advanced → Go to project</b> and <b>Allow</b>. (It’s your own script, so Google warns you that it isn’t verified.)</li>
-<li>Copy the <b>Web app URL</b> (it ends in /exec). Paste it here with a passphrase you’ll remember.</li>
-<li>On your other device, open Settings → <b>Sync with your other devices</b> and enter the same address and passphrase.</li></ol>
-<p class="note">The records are kept in a “Workshop sync” folder in your Google Drive, scrambled with your passphrase. Without the passphrase nobody, including Google, can read them, so don’t lose it: if you do, set sync up again with a new one.</p>`;
-function syncSetup(){openDlg('Sync with your other devices',`<p>Keep your phone and computer in step. Changes on one show up on the other, and each still works without the internet.</p>${SYNC_GUIDE}
-  <div class="form" style="margin-top:12px"><label class="full">Web app address<input id="syU" inputmode="url" autocomplete="off" placeholder="https://script.google.com/macros/s/…/exec" value="${esc(syncCfg?.url||'')}"></label>
-  <label class="full">Passphrase<input id="syP" type="password" autocomplete="new-password" placeholder="At least 8 characters"></label></div><p class="note" id="syMsg" style="margin-top:8px"></p>`,
-  `<button type="button" id="syCopy">Copy script</button><span class="sp"></span><button type="button" class="pri" id="syGo">Connect</button>`);
-  $('#syCopy').onclick=()=>copyText(SYNC_GS,'Script copied. Paste it into the new project at script.google.com');
-  $('#syGo').onclick=async()=>{const u=$('#syU').value,p=$('#syP').value,msg=$('#syMsg');if(p.length<8){msg.textContent='Choose a passphrase of at least 8 characters.';return}
-    $('#syGo').disabled=true;msg.textContent='Connecting…';
-    try{const{h,cfg}=await syncConnect(u,p);
-      if(!h.started){/* first device: everything here goes up */syncCfg=cfg;syncKeyP=null;syncHello=true;syncDirty={};syncLocalKeys().forEach(([k,u])=>syncDirty[k]={u,d:0});syncW(SYNCD,syncDirty);syncW(SYNCK,syncCfg);
-        msg.textContent='Sending your records…';await syncNow();if(syncCfg.err)throw new Error(syncCfg.err==='pass'?'wrong passphrase':syncCfg.err);
-        dlg.close();toast('Sync is on. Now set it up on your other device with the same address and passphrase');return}
-      /* joining: check the passphrase and fetch what's there */
-      const prev=syncCfg;syncCfg=cfg;syncKeyP=null;let j;
-      try{j=await syncCall({op:'sync',token:cfg.token,since:0,changes:[]})}catch(e){syncCfg=prev;syncKeyP=null;throw new Error(/wrong passphrase/.test(e.message)?'That passphrase doesn’t match the one used on your other device.':e.message)}
-      const mineN=syncLocalKeys().length-1;
-      const finish=async combine=>{syncDirty={};if(combine)syncLocalKeys().forEach(([k,u])=>syncDirty[k]={u,d:0});else{COLS.forEach(c=>S[c]=(S[c]||[]).filter(x=>syncIsDemo(c,x)))}
-        syncW(SYNCD,syncDirty);syncHello=true;await syncApply(j.recs,{keepNewer:combine});syncCfg.since=j.seq;syncCfg.last=Date.now();syncW(SYNCK,syncCfg);dlg.close();
-        if(combine)await syncNow();if(syncGet.length)syncPhotos();toast(`Sync is on. ${j.recs.filter(r=>!r.d).length} records came from your other device`)};
-      if(mineN<=0)return finish(false);
-      openDlg('This device already has records',`<p>Your other device has <b>${j.recs.filter(r=>!r.d).length}</b> records in sync, and this one has <b>${mineN}</b> of its own.</p><p class="note">Combine them, or replace what’s on this device with the synced records.</p>`,
-        `<button type="button" id="syRep">Use the synced records</button><span class="sp"></span><button type="button" class="pri" id="syCom">Combine them</button>`);
-      $('#syCom').onclick=()=>finish(true);$('#syRep').onclick=()=>{if(confirm('Replace the records on this device with the synced ones? Records only on this device will be removed.'))finish(false)}}
-    catch(e){msg.textContent=e.message==='pass'||/wrong passphrase/.test(e.message)?'That passphrase doesn’t match the one used on your other device.':e.message;$('#syGo').disabled=false}}}
-function syncOff(){if(!confirm('Turn off sync on this device? Your records stay on this device and in your Drive. Your other devices keep syncing.'))return;syncCfg={...syncCfg,on:false};syncW(SYNCK,syncCfg);syncSet('');toast('Sync is off on this device')}
-const SYNC_GS="/**\n * Workshop sync \u2014 keeps the Workshop app on your phone and computer in step.\n *\n * Runs in your own Google account and keeps the records in a folder called\n * \"Workshop sync\" in your Google Drive. Everything is encrypted on your devices\n * with your passphrase before it is sent, so this script (and Google) only ever\n * sees scrambled data. Nothing here needs changing: paste it in, deploy it as a\n * web app, and copy the web app address into Workshop.\n */\n\nconst FOLDER = 'Workshop sync';\nconst STATE = 'workshop-sync.json';\n\nfunction doGet() {\n  return out({ ok: true, app: 'workshop-sync', v: 1 });\n}\n\nfunction doPost(e) {\n  let req;\n  try {\n    req = JSON.parse((e && e.postData && e.postData.contents) || '{}');\n  } catch (err) {\n    return out({ ok: false, error: 'bad request' });\n  }\n  const lock = LockService.getScriptLock();\n  try {\n    lock.waitLock(30000);\n  } catch (err) {\n    return out({ ok: false, error: 'busy' });\n  }\n  try {\n    return out(handle(req));\n  } catch (err) {\n    return out({ ok: false, error: String((err && err.message) || err) });\n  } finally {\n    lock.releaseLock();\n  }\n}\n\nfunction out(o) {\n  return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);\n}\n\nfunction folder() {\n  const it = DriveApp.getFoldersByName(FOLDER);\n  return it.hasNext() ? it.next() : DriveApp.createFolder(FOLDER);\n}\n\nfunction fileIn(f, name) {\n  const it = f.getFilesByName(name);\n  return it.hasNext() ? it.next() : null;\n}\n\nfunction load(f) {\n  const file = fileIn(f, STATE);\n  if (!file) return { file: null, st: { v: 1, seq: 0, salt: '', token: '', recs: {} } };\n  return { file, st: JSON.parse(file.getBlob().getDataAsString()) };\n}\n\nfunction save(f, file, st) {\n  const s = JSON.stringify(st);\n  if (file) file.setContent(s);\n  else f.createFile(STATE, s, 'application/json');\n}\n\nfunction newSalt() {\n  return Utilities.base64Encode(Utilities.getUuid() + Utilities.getUuid());\n}\n\nfunction handle(req) {\n  const f = folder();\n  const { file, st } = load(f);\n\n  // First contact: hands out the salt used to turn the passphrase into a key.\n  if (req.op === 'hello') {\n    if (!st.salt) {\n      st.salt = newSalt();\n      save(f, file, st);\n    }\n    return { ok: true, salt: st.salt, started: !!st.token, seq: st.seq, count: Object.keys(st.recs).length };\n  }\n\n  // The first device to connect sets the passphrase check; later ones must match it.\n  let tokenNew = false;\n  if (!st.token) {\n    if (req.op !== 'sync' && req.op !== 'replace') return { ok: false, error: 'not set up' };\n    if (!req.token) return { ok: false, error: 'wrong passphrase' };\n    st.token = req.token;\n    tokenNew = true;\n  } else if (req.token !== st.token) {\n    return { ok: false, error: 'wrong passphrase' };\n  }\n\n  if (req.op === 'putPhoto') {\n    const ph = photoFolder(f);\n    const old = fileIn(ph, req.id);\n    if (old) old.setContent(req.x);\n    else ph.createFile(req.id, req.x, 'text/plain');\n    return { ok: true };\n  }\n\n  if (req.op === 'getPhoto') {\n    const p = fileIn(photoFolder(f), req.id);\n    return p ? { ok: true, x: p.getBlob().getDataAsString() } : { ok: false, error: 'missing photo' };\n  }\n\n  if (req.op === 'replace') {\n    // One device's records become everyone's (after restoring a backup).\n    const keep = {};\n    (req.changes || []).forEach(c => { keep[c.k] = 1; });\n    Object.keys(st.recs).forEach(k => {\n      if (!keep[k] && !st.recs[k].d) {\n        st.seq++;\n        st.recs[k] = { s: st.seq, u: Date.now(), d: 1 };\n        if (k.indexOf('photos|') === 0) trashPhoto(f, k.slice(7));\n      }\n    });\n    (req.changes || []).forEach(c => {\n      st.seq++;\n      st.recs[c.k] = { s: st.seq, u: c.u, d: c.d ? 1 : 0, x: c.d ? undefined : c.x };\n    });\n    save(f, file, st);\n    return { ok: true, seq: st.seq, recs: [] };\n  }\n\n  if (req.op === 'sync') {\n    const since = +req.since || 0;\n    const mine = {};\n    const back = [];\n    let changed = tokenNew || !file;\n    (req.changes || []).forEach(c => {\n      const cur = st.recs[c.k];\n      if (!cur || c.u >= cur.u) {\n        st.seq++;\n        st.recs[c.k] = { s: st.seq, u: c.u, d: c.d ? 1 : 0, x: c.d ? undefined : c.x };\n        mine[c.k] = 1;\n        changed = true;\n        if (c.d && c.k.indexOf('photos|') === 0) trashPhoto(f, c.k.slice(7));\n      } else {\n        // A newer version is already here: send it back so the device catches up.\n        back.push(c.k);\n      }\n    });\n    if (changed) save(f, file, st);\n    const recs = [];\n    Object.keys(st.recs).forEach(k => {\n      const r = st.recs[k];\n      if ((r.s > since && !mine[k]) || back.indexOf(k) >= 0) recs.push({ k, s: r.s, u: r.u, d: r.d, x: r.x });\n    });\n    return { ok: true, seq: st.seq, recs };\n  }\n\n  return { ok: false, error: 'unknown request' };\n}\n\nfunction photoFolder(f) {\n  const it = f.getFoldersByName('photos');\n  return it.hasNext() ? it.next() : f.createFolder('photos');\n}\n\nfunction trashPhoto(f, id) {\n  const p = fileIn(photoFolder(f), id);\n  if (p) p.setTrashed(true);\n}\n";
+/* ---- sync codes ----
+   Sync runs through the family's shared sync server, so nobody has to set anything up. Each business gets
+   a random sync code on its first device. The code becomes both the account number on the server and the
+   key that scrambles the records, so the server can't read them. Other devices join by scanning the code. */
+const SYNC_ABC='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+const syncNewCode=()=>[...crypto.getRandomValues(new Uint8Array(24))].map(b=>SYNC_ABC[b&31]).join('');
+const syncCodeFmt=c=>String(c||'').match(/.{1,4}/g)?.join('-')||'';
+/* reads a typed or scanned code; a scanned one also carries the server's address */
+function syncCodeParse(t){t=String(t||'').trim();let url='';const m=t.match(/^WKSYNC:([^@\s]+)(?:@(\S+))?$/i);if(m){t=m[1];url=m[2]||''}
+  const c=t.toUpperCase().replace(/O/g,'0').replace(/[^A-Z0-9]/g,'').replace(/[01]/g,'');return{code:c.length===24&&[...c].every(x=>SYNC_ABC.includes(x))?c:'',url}}
+async function syncFromCode(code){const h=async t=>new Uint8Array(await crypto.subtle.digest('SHA-256',sEnc.encode('workshop-sync|'+t+'|'+code))),hex=b=>[...b].map(x=>x.toString(16).padStart(2,'0')).join('');
+  return{key:sB64(await h('key')),acct:hex(await h('acct')).slice(0,32),token:hex(await h('token'))}}
+/* where the sync server is: set in this copy of the app (sync-server.txt beside it), or carried in a scanned code */
+let syncServer='';
+async function syncServerAddr(hint){if(hint&&/^https:\/\//.test(hint))return hint.replace(/\/+$/,'');if(window.__syncServer)return window.__syncServer;if(syncServer)return syncServer;
+  try{const v=localStorage.getItem('wsSyncServer');if(v)return syncServer=v}catch(e){}
+  try{const r=await fetch('sync-server.txt',{cache:'no-store'});if(r.ok){const t=(await r.text()).trim().split(/\s+/)[0];if(/^https:\/\/[^\s/]+\.[^\s/]+/.test(t))return syncServer=t.replace(/\/+$/,'')}}catch(e){}
+  return''}
+async function syncConnectCode(code,hint){const url=await syncServerAddr(hint);if(!url)throw new Error('noserver');const d=await syncFromCode(code);
+  let h;try{h=await syncCall({op:'hello',acct:d.acct},url)}catch(e){const m=String(e.message||'');noteErr('Sync connect: '+m,'sync',1);
+    throw new Error(/^net:/.test(m)?(navigator.onLine===false?'This device is offline. Connect to the internet and try again.':'Couldn’t reach the sync server. Check you’re online and try again.'):m==='no database'?'The sync server isn’t finished being set up (its database isn’t linked).':'The sync server answered with a problem: '+m)}
+  return{h,cfg:{on:true,url,acct:d.acct,key:d.key,token:d.token,code,since:0,last:0,err:''}}}
+const SYNC_NOSERVER='<p class="note">This copy of the app doesn’t know where the sync server is yet. Whoever looks after the app needs to add it (see the setup guide). If another device already syncs, choose <b>Join with a code</b> and scan its code: that brings the server address with it.</p>';
+function syncSetup(){openDlg('Sync with your other devices',`<p>Keep your phone and computer in step. Changes on one show up on the other, and each still works without the internet.</p>
+  <div class="list" style="margin-top:10px"><button type="button" class="item" id="syStart"><div class="grow"><b>Start sync on this device</b><br><small>Do this on the device that has your records. You’ll get a code to add your other devices.</small></div></button>
+  <button type="button" class="item" id="syJoin"><div class="grow"><b>Join with a code</b><br><small>Do this on your other devices. Scan the code shown on the device where sync is on.</small></div></button></div>
+  <p class="note" id="syMsg" style="margin-top:10px"></p>`,'');
+  const msg=t=>{const m=$('#syMsg');if(m)m.innerHTML=t};
+  $('#syStart').onclick=async()=>{if(syncOn()&&!confirm('Sync is already on. Start a new sync code? Your other devices will need to join again with the new code.'))return;
+    $('#syStart').disabled=$('#syJoin').disabled=true;msg('Starting…');
+    try{const code=syncNewCode();const{h,cfg}=await syncConnectCode(code);if(h.started)throw new Error('Please try again.');
+      syncCfg=cfg;syncKeyP=null;syncHello=true;syncDirty={};syncPh={};syncW(SYNCP,syncPh);syncLocalKeys().forEach(([k,u])=>syncDirty[k]={u,d:0});syncW(SYNCD,syncDirty);syncW(SYNCK,syncCfg);
+      msg('Sending your records…');await syncNow();if(syncCfg.err)throw new Error(syncCfg.err==='net'?'Sync started, but sending your records didn’t finish. It will keep trying.':syncCfg.err==='closed'?'The sync server isn’t accepting new businesses right now.':syncCfg.err);
+      syncShowCode(true)}
+    catch(e){if(e.message==='noserver')msg(SYNC_NOSERVER);else msg(esc(e.message));$('#syStart').disabled=$('#syJoin').disabled=false}};
+  $('#syJoin').onclick=()=>syncJoinDlg()}
+/* the code to add another device: as a QR code to scan, and as text to type */
+async function syncShowCode(fresh){const c=syncCfg.code;if(!c){toast('This device was set up with an address and passphrase, so it has no code to show.');return}
+  openDlg(fresh?'Sync is on':'Add another device',`${fresh?'<p>Your records are synced. Now add your other devices:</p>':''}<ol class="steps"><li>On the other device, open <b>Settings → Sync with your other devices</b>.</li><li>Choose <b>Join with a code</b> and scan this code, or type it in.</li></ol>
+    <div id="syQR" style="display:grid;place-items:center;margin:12px 0;min-height:200px"></div><p style="text-align:center;font:600 18px/1.4 ui-monospace,monospace;letter-spacing:.5px;word-spacing:4px;margin:0">${syncCodeFmt(c)}</p>
+    <p class="note" style="margin-top:10px">This code is the key to your records. Only use it on your own devices, and keep it somewhere safe: you’ll need it to add a new device.</p>`,
+    `<button type="button" id="syCp">Copy code</button><span class="sp"></span><button type="button" class="pri" onclick="dlg.close()">Done</button>`);
+  $('#syCp').onclick=()=>copyText(syncCodeFmt(c),'Sync code copied');
+  try{await loadAny(QRLIB);const q=window.qrcode(0,'M');q.addData('WKSYNC:'+c+'@'+syncCfg.url);q.make();const n=q.getModuleCount();let r='';for(let y=0;y<n;y++)for(let x=0;x<n;x++)if(q.isDark(y,x))r+=`M${x+4} ${y+4}h1v1h-1z`;
+    const el=$('#syQR');if(el)el.innerHTML=`<svg viewBox="0 0 ${n+8} ${n+8}" width="220" height="220" role="img" aria-label="Sync code as a QR code" shape-rendering="crispEdges" style="background:#fff;border-radius:8px"><path d="${r}" fill="#000"/></svg>`}
+  catch(e){const el=$('#syQR');if(el)el.innerHTML='<p class="note">The QR code couldn’t be shown without the internet. Type the code instead.</p>'}}
+function syncJoinDlg(prefill){openDlg('Join with a code',`<p>On the device where sync is on, open <b>Settings → Sync with your other devices → Add another device</b> to show its code.</p>
+  <div class="row" style="margin:10px 0"><button type="button" class="pri" id="syScan">Scan the code</button></div>
+  <div class="form"><label class="full">Or type the code<input id="syC" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX-XXXX-XXXX-XXXX-XXXX" value="${esc(prefill||'')}"></label></div><p class="note" id="syMsg" style="margin-top:8px"></p>`,
+  `<span class="sp"></span><button type="button" class="pri" id="syGo">Join</button>`);
+  $('#syScan').onclick=()=>scanCode(t=>{const p=syncCodeParse(t);if(!p.code){toast('That isn’t a Workshop sync code');syncJoinDlg();return}syncJoinDlg(syncCodeFmt(p.code));syncJoinGo(p.code,p.url)},false,{title:'Scan the sync code',msg:'Point the camera at the code on your other device.',label:'Or type the code'});
+  $('#syGo').onclick=()=>{const p=syncCodeParse($('#syC').value);if(!p.code){$('#syMsg').textContent='That code isn’t complete. It has 24 letters and numbers.';return}syncJoinGo(p.code,p.url)}}
+async function syncJoinGo(code,hint){const msg=t=>{const m=$('#syMsg');if(m)m.innerHTML=t};const go=$('#syGo');if(go)go.disabled=true;msg('Connecting…');
+  try{const{h,cfg}=await syncConnectCode(code,hint);
+    if(!h.started)throw new Error('No device has started sync with that code yet. Check the code, or choose Start sync on the device with your records.');
+    const prev=syncCfg;syncCfg=cfg;syncKeyP=null;let j;
+    try{j=await syncPullAll(0)}catch(e){syncCfg=prev;syncKeyP=null;throw new Error(/wrong passphrase/.test(e.message)?'That code doesn’t match. Check it and try again.':e.message)}
+    const mineN=syncLocalKeys().length-1;
+    const finish=async combine=>{syncDirty={};syncPh={};if(combine)syncLocalKeys().forEach(([k,u])=>syncDirty[k]={u,d:0});else{COLS.forEach(c=>S[c]=(S[c]||[]).filter(x=>syncIsDemo(c,x)));dirtyAll=true}
+      syncW(SYNCD,syncDirty);syncHello=true;await syncApply(j.recs,{keepNewer:combine});syncCfg.since=j.seq;syncCfg.last=Date.now();syncW(SYNCK,syncCfg);syncW(SYNCP,syncPh);dlg.close();
+      if(combine)await syncNow();if(syncGet.length)syncPhotos();toast(`Sync is on. ${j.recs.filter(r=>!r.d).length} records came from your other device`)};
+    if(mineN<=0)return finish(false);
+    openDlg('This device already has records',`<p>Your other device has <b>${j.recs.filter(r=>!r.d).length}</b> records in sync, and this one has <b>${mineN}</b> of its own.</p><p class="note">Combine them, or replace what’s on this device with the synced records.</p>`,
+      `<button type="button" id="syRep">Use the synced records</button><span class="sp"></span><button type="button" class="pri" id="syCom">Combine them</button>`);
+    $('#syCom').onclick=()=>finish(true);$('#syRep').onclick=()=>{if(confirm('Replace the records on this device with the synced ones? Records only on this device will be removed.'))finish(false)}}
+  catch(e){msg(e.message==='noserver'?SYNC_NOSERVER:esc(e.message));if(go)go.disabled=false}}
+function syncOff(){if(!confirm('Turn off sync on this device? Your records stay on this device. Your other devices keep syncing.'))return;syncCfg={...syncCfg,on:false};syncW(SYNCK,syncCfg);syncSet('');toast('Sync is off on this device')}
 /* ================= UNDO FOR BIG MISTAKES =================
    For 7 days the app keeps a copy of anything deleted, and of bigger changes made in one go (a stocktake, an order,
    a restore): everything changed within a couple of seconds counts as one action. Settings → Recently deleted or
@@ -1344,7 +1536,7 @@ function editor({title,fields,rec,save,onDel,extra='',another}){
 }
 function custName(id){return byId('customers',id)?.name||''}
 async function resolveCust(name){name=(name||'').trim();if(!name)return'';const c=S.customers.find(x=>x.name.toLowerCase()===name.toLowerCase());if(c)return c.id;const id=uid();await put('customers',{id,name,since:today()});return id}
-function refreshCustDL(){$('#custDL').innerHTML=S.customers.map(c=>`<option value="${esc(c.name)}">`).join('');$('#supDL').innerHTML=S.suppliers.map(c=>`<option value="${esc(c.name)}">`).join('');$('#evDL').innerHTML=[...new Set(S.events.map(e=>e.name))].map(n=>`<option value="${esc(n)}">`).join('')}
+let dlDV=-1;function refreshCustDL(){if(dlDV===DV)return;dlDV=DV;$('#custDL').innerHTML=S.customers.map(c=>`<option value="${esc(c.name)}">`).join('');$('#supDL').innerHTML=S.suppliers.map(c=>`<option value="${esc(c.name)}">`).join('');$('#evDL').innerHTML=[...new Set(S.events.map(e=>e.name))].map(n=>`<option value="${esc(n)}">`).join('')}
 async function resolveSup(name){const n=(name||'').trim();if(n&&!S.suppliers.some(s=>s.name.trim().toLowerCase()===n.toLowerCase()))await put('suppliers',{id:uid(),name:n})}
 
 /* ================= periods ================= */
@@ -1400,7 +1592,7 @@ function alerts(){const A=[],t=today(),soon=addDays(t,7);
   S.jobs.filter(j=>j.kind!=='appr'&&!['Collected','Cancelled'].includes(j.status)&&j.due).forEach(j=>{if(j.due<t)A.push(['bad',`Job <b>${esc(j.title)}</b> was due ${fmtD(j.due)}`,'Open',()=>jobView(j)]);else if(j.due<=soon)A.push(['warn',`Job <b>${esc(j.title)}</b> due ${fmtD(j.due)}`,'Open',()=>jobView(j)])});
   S.jobs.filter(j=>j.kind==='appr'&&j.status==='Out'&&j.due&&j.due<=t).forEach(j=>A.push(['bad',`Approval with <b>${esc(custName(j.customer)||j.who||'customer')}</b> due back ${fmtD(j.due)}`,'Open',()=>apprView(j)]));
   {const m=new Map();conOut().filter(k=>daysOut(k)>90).forEach(k=>m.set(k.shop,(m.get(k.shop)||0)+1));m.forEach((n,id)=>{const c=byId('customers',id);if(c)A.push(['warn',`<b>${n}</b> piece${n>1?'s have':' has'} been at <b>${esc(c.name)}</b> over 90 days`,'Check',()=>conShop(c)])})}
-  if(!db&&savedLen*2>7e6)A.push(['warn',`Your records are using <b>${(savedLen*2/1048576).toFixed(1)} MB</b> of about 10 MB this app can store. Make a backup, then clear old bank statement lines in Tax time.`,'Settings',()=>openSettings()]);
+  if(!db&&!idbMode&&savedLen*2>7e6)A.push(['warn',`Your records are using <b>${(savedLen*2/1048576).toFixed(1)} MB</b> of about 10 MB this app can store. Make a backup, then clear old bank statement lines in Tax time.`,'Settings',()=>openSettings()]);
   const od=S.sales.filter(s=>!s.paid&&s.due&&s.due<t);if(od.length)A.push(['bad',`<b>${od.length}</b> invoice${od.length>1?'s are':' is'} overdue · ${money(od.reduce((a,s)=>a+saleCalc(s).due,0))}`,'Remind',()=>od.length===1?receiptMsg(od[0]):(location.hash='sales',setTimeout(()=>{$('#salesPeriod').value='all';$('#salesQ').value='unpaid';renderSales()},50))]);
   const unpaid=S.sales.filter(s=>!s.paid&&!(s.due&&s.due<t));if(unpaid.length)A.push(['warn',`<b>${unpaid.length}</b> unpaid invoice${unpaid.length>1?'s':''} · ${money(unpaid.reduce((a,s)=>a+saleCalc(s).due,0))}`,'View',()=>{location.hash='sales';$('#salesPeriod').value='all';$('#salesQ').value='unpaid';renderSales()}]);
   S.stock.filter(x=>x.cat==='equip'&&num(x.svcDays)>0).forEach(x=>{const nx=addDays(x.svcLast||x.date||t,num(x.svcDays));if(nx<=soon)A.push([nx<t?'bad':'warn',`Service <b>${esc(x.name)}</b> ${nx<t?'overdue':'due'} ${fmtD(nx)}`,'Open',()=>stockView(x)])});
@@ -1589,6 +1781,7 @@ function renderStock(){$('#stockTitle').textContent={stone:silStones()?'Stones f
   const F=stockFilt[stockCat]||(stockFilt[stockCat]={});
   $('#stockF').innerHTML=FK.map(([k,l])=>{const vals=k==='grp'?['tools','cons']:[...new Set(mine.map(x=>k==='enamel'?(x.enamel?'yes':'no'):(x[k]||'')).filter(Boolean))].sort();if(k!=='kind'&&vals.length<2&&!F[k])return '';
     const opts=k==='enamel'?[['yes','Enamelled'],['no','Not enamelled']]:k==='grp'?[['tools','Tools & machines'],['cons','Consumables']]:vals.map(v=>[v,v]);return `<select class="auto${F[k]?' on':''}" data-f="${k}" aria-label="${l}"><option value="">${l}</option>${opts.map(([v,t])=>`<option value="${esc(v)}" ${F[k]===v?'selected':''}>${esc(t)}</option>`).join('')}</select>`}).join('')+(Object.values(F).some(Boolean)?'<button type="button" class="sm ghost" id="stockFclr">Clear</button>':'');
+  {const fb=$('#stockFBtn'),n=Object.values(F).filter(Boolean).length;fb.hidden=!FK.length||!$('#stockF').children.length;fb.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Filters${n?` <span class="fcount">${n}</span>`:''}`;fb.classList.toggle('on',!!n)}
   const fOk=x=>Object.entries(F).every(([k,v])=>!v||(k==='grp'?(v==='cons')===isConsK(x):k==='enamel'?(v==='yes')===!!x.enamel:k==='material'?(x.material===v||x.metal2===v):x[k]===v));
   let rows=mine.filter(x=>fOk(x)&&(z||!isFin(x)||num(x.qty)>0)&&(!q||[x.name,x.sku,x.material,x.metal2,x.loc,x.kind,x.style,x.shape,x.setting,x.enamel,x.enCol,x.finish,x.coll,x.origin,x.supplier,x.cert,x.size,x.stamp].join(' ').toLowerCase().includes(q)));
   rows.sort(srt==='new'?(a,b)=>(b.updated||0)-(a.updated||0):srt==='value'?(a,b)=>num(b.qty)*num(b.cost)-num(a.qty)*num(a.cost):srt==='qty'?(a,b)=>num(a.qty)-num(b.qty):(a,b)=>(a.name||'').localeCompare(b.name||''));
@@ -1631,7 +1824,7 @@ $('#selLab').onclick=()=>{const xs=picked().filter(sellable);if(!xs.length){toas
 $('#selArea').onclick=()=>{const xs=picked();if(!xs.length)return;openDlg(`Which workshop for ${xs.length} item${xs.length>1?'s':''}?`,`<p class="note" style="margin-top:0">Choose where these show up. <b>Both</b> shows them in Lapidary and Silversmithing.</p><div class="seg odest" id="baV" style="margin-top:8px">${['Silversmithing','Lapidary','Both'].map(v=>`<button type="button" data-v="${v}">${v}</button>`).join('')}</div>`,'');$('#baV').onclick=async e=>{const b=e.target.closest('[data-v]');if(!b)return;dlg.close();await bulkPut(xs.map(x=>({...x,area:b.dataset.v})),`${xs.length} item${xs.length>1?'s':''} moved to ${b.dataset.v==='Both'?'both workshops':b.dataset.v}`)}};
 $('#selMin').onclick=bulkField('Set low-stock level','Warn me when quantity drops below','min','number');
 $('#selDel').onclick=async()=>{const xs=picked();if(!xs.length)return;for(const x of xs)await remove('stock',x.id);sel.clear();renderStock();drawSelBar();toast(`Deleted ${xs.length} item${xs.length>1?'s':''}`,{label:'Undo',fn:async()=>{for(const x of xs)await put('stock',x);toast('Items restored')}})};
-['#stockQ','#stockSort','#stockZero'].forEach(s=>$(s).addEventListener('input',renderStock));$('#addStock').onclick=()=>stockCat==='stone'&&ws==='silver'?stockEdit(null,'stone',{kind:'Faceted gem',unit:'pcs'}):lapRough()?stockEdit(null,'stone',{kind:'Rough',unit:'g'}):stockEdit(null,stockCat);
+{let sqT;$('#stockQ').addEventListener('input',()=>{clearTimeout(sqT);sqT=setTimeout(renderStock,S.stock.length>600?110:0)});['#stockSort','#stockZero'].forEach(s=>$(s).addEventListener('input',renderStock))};$('#addStock').onclick=()=>stockCat==='stone'&&ws==='silver'?stockEdit(null,'stone',{kind:'Faceted gem',unit:'pcs'}):lapRough()?stockEdit(null,'stone',{kind:'Rough',unit:'g'}):stockEdit(null,stockCat);
 function stockView(x){x=byId('stock',x.id)||x;const st=x.cat==='stone',jw=x.cat==='jewel',mt=x.cat==='metal',eq=x.cat==='equip',parent=x.from&&byId('stock',x.from),kids=S.stock.filter(k=>k.from===x.id),usedIn=S.stock.filter(k=>k.cat==='jewel'&&(k.comps||[]).some(c=>c.item===x.id));
   const sold=S.sales.flatMap(s=>(s.lines||[]).filter(l=>l.item===x.id).map(l=>({s,l}))),des=x.design&&byId('designs',x.design);
   let dep='';if(eq&&num(x.life)>0&&num(x.cost)){const yrs=(Date.now()-new Date((x.date||today())+'T00:00'))/(365.25*864e5),tot=num(x.cost)*num(x.qty),bv=Math.max(0,tot*(1-yrs/num(x.life)));dep=money(bv)}
@@ -1721,7 +1914,7 @@ function renderSales(){const r=periodRange($('#salesPeriod').value),q=$('#salesQ
   const cs=rows.map(saleCalc),sum=k=>cs.reduce((a,c)=>a+c[k],0);
   $('#salesTiles').innerHTML=`<div class="tile"><span>Sales${S.settings.gstReg?' (ex GST)':''}</span><b>${money(sum('net'))}</b><small>${rows.length} sale${rows.length===1?'':'s'}</small></div><div class="tile"><span>Cost of items sold</span><b>${money(sum('cogs'))}</b></div><div class="tile"><span>Fees &amp; postage</span><b>${money(sum('fees')+sum('shipCost'))}</b></div><div class="tile"><span>Profit</span><b class="${sum('profit')<0?'neg':'pos'}">${money(sum('profit'))}</b><small>${sum('net')?Math.round(sum('profit')/sum('net')*100)+'% margin':''}</small></div>`;
   $('#salesList').innerHTML=rows.length?capRows('salesList',rows).map(saleRow).join('')+moreBtn('salesList',rows):'<div class="empty">No sales in this period.</div>'}
-['#salesPeriod','#salesQ'].forEach(s=>$(s).addEventListener('input',renderSales));
+{let qT;$('#salesQ').addEventListener('input',()=>{clearTimeout(qT);qT=setTimeout(renderSales,S.sales.length>1500?110:0)});$('#salesPeriod').addEventListener('input',renderSales)}
 $('#salesList').onclick=e=>{const it=e.target.closest('.item');if(it)saleView(byId('sales',it.dataset.id))};$('#addSale').onclick=()=>saleEdit();
 function saleEdit(rec,preset,onSaved){const isNew=!rec;rec=rec||{id:uid(),_new:1,date:today(),no:nextInv(),channel:channels()[0]?.name||'',gst:!!S.settings.gstReg,paid:true,feeAuto:true,...(preset||{})};
   let lines=JSON.parse(JSON.stringify(rec.lines||[{item:'',desc:'',qty:1,price:''}]));
@@ -2705,7 +2898,6 @@ $('#labBtn').onclick=()=>{const v=$('#labSel').value,inS=S.stock.filter(x=>sella
 /* CSV */
 const csvCell=v=>{v=v==null?'':String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
 const toCSV=(head,rows)=>[head,...rows].map(r=>r.map(csvCell).join(',')).join('\n');
-function parseCSV(t){const rows=[];let row=[],f='',q=false;for(let i=0;i<t.length;i++){const c=t[i];if(q){if(c==='"'){if(t[i+1]==='"'){f+='"';i++}else q=false}else f+=c}else if(c==='"')q=true;else if(c===','){row.push(f);f=''}else if(c==='\n'||c==='\r'){if(c==='\r'&&t[i+1]==='\n')i++;row.push(f);rows.push(row);row=[];f=''}else f+=c}if(f||row.length){row.push(f);rows.push(row)}return rows.filter(r=>r.some(x=>x.trim()))}
 const EXPORTS={stock:()=>toCSV(['SKU','Category','Name','Type','Style','Material','Second metal','Shape','Setting','Enamel','Enamel colours','Finish','Collection','Qty','Unit','Cost per unit','Value at cost','Asking price','Location','Supplier','Origin','Certificate','Date','Disclosure','Hours worked'],S.stock.map(x=>[x.sku,catLabel(x.cat),x.name,x.kind,x.style,x.material,x.metal2,x.shape,x.setting,x.enamel,x.enCol,x.finish,x.coll,x.qty,x.unit,x.cost,(num(x.qty)*num(x.cost)).toFixed(2),x.price,x.loc,x.supplier,x.origin,x.cert,x.date,discl(x),+totH(x).toFixed(2)])),
   sales:()=>toCSV(['Date','Invoice','Customer','Channel','Item','Material','Qty','Price each','Line total','Cost of items','Postage charged','Fees','Postage cost','GST included','Paid'],S.sales.flatMap(s=>{const c=saleCalc(s);return(s.lines||[]).map((l,i)=>[s.date,s.no,custName(s.customer),s.channel,l.desc,l.mat,l.qty,l.price,(num(l.qty)*num(l.price)).toFixed(2),l.cost,i?'':s.ship,i?'':s.fees,i?'':s.shipCost,i?'':c.gst.toFixed(2),s.paid?'yes':'no'])})),
   ledger:()=>toCSV(['Date','Type','Category','Description','Amount','GST'],ledgerRows(periodRange('all')).map(x=>[x.date,x.type==='in'?'income':'expense',x.cat,x.desc,num(x.amount).toFixed(2),num(x.gstAmt).toFixed(2)])),
@@ -2731,16 +2923,16 @@ function openSettings(){const H=(id,t)=>({k:'_'+id,t:'html',full:1,html:`<h3 cla
   H('setSq','Square'),{k:'sqOn',l:'Take card payments through Square in Market mode',t:'check',full:1},{k:'sqApp',l:'Square Application ID',full:1,ph:'sq0idp-…',help:'sqapp'},{k:'_sq',t:'html',full:1,html:'<div id="sqSet"></div>'},
   H('setInv','Invoices & labels'),{k:'sku',l:'SKU prefix',ph:'LW'},{k:'channels',l:'Sales channels',hint:'one per line: Name | fee % | fixed fee',t:'area',full:1},
   {k:'bank',l:'Payment details on invoices',t:'area',full:1,ph:'BSB 000-000  Account 0000 0000'},{k:'footer',l:'Invoice footer',full:1}];
-  editor({title:'Settings',fields:f,rec:S.settings,save:o=>{const id=String(o.sqApp||'').trim();if(o.sqOn&&!/^sq0idp-/.test(id))setTimeout(()=>toast('Square: paste the production Application ID, which starts with sq0idp-'),700);return putSettings({...o,sqApp:id})},extra:`<h3 class="seth" id="setLock">App lock ${tipBtn('applock')}</h3><div id="lockSet"></div>${db?'':`<h3 class="seth" id="setSync">Sync with your other devices</h3><p class="note" id="syncState">${syncLine()}</p><div class="row">${syncOn()?'<button type="button" class="pri" id="sySync">Sync now</button><button type="button" id="syMore">Activity and options</button>':'<button type="button" class="pri" id="sySet">Set up sync</button>'}</div>`}
+  editor({title:'Settings',fields:f,rec:S.settings,save:o=>{const id=String(o.sqApp||'').trim();if(o.sqOn&&!/^sq0idp-/.test(id))setTimeout(()=>toast('Square: paste the production Application ID, which starts with sq0idp-'),700);return putSettings({...o,sqApp:id})},extra:`<h3 class="seth" id="setLock">App lock ${tipBtn('applock')}</h3><div id="lockSet"></div>${db?'':`<h3 class="seth" id="setSync">Sync with your other devices</h3><p class="note" id="syncState">${syncLine()}</p><div class="row">${syncOn()?`<button type="button" class="pri" id="sySync">Sync now</button>${syncCfg.code?'<button type="button" id="syAdd">Add another device</button>':''}<button type="button" id="syMore">Activity and options</button>`:'<button type="button" class="pri" id="sySet">Turn on sync</button>'}</div>`}
    <h3 class="seth" id="setUndo">Undo</h3><p class="note">Deleted something by mistake, or a big change went wrong? Anything deleted, and bigger changes made in one go, can be put back for ${UNDO_DAYS} days.</p><div class="row"><button type="button" id="undoOpen">Recently deleted or changed${(()=>{undoSave();return undoJ.length?` (${undoJ.length})`:''})()}</button></div>
    <h3 class="seth" id="setBack">Backup</h3><p class="note">Keep a copy of all your records and photos somewhere safe, or restore one. <span id="bSize"></span></p>
    <div class="row"><button type="button" class="pri" id="bDrive">Back up to Google Drive</button><button type="button" id="bDl">Download backup</button><button type="button" id="bCopy">Copy records only</button><label class="btn" style="display:inline-flex;align-items:center">Restore from file<input type="file" id="bFile" accept=".json,application/json" hidden></label></div>
    ${autoBkOK()?`<label class="check" style="margin-top:12px"><input type="checkbox" id="bAuto" ${S.settings.autoBk===false?'':'checked'}> Save a backup on this phone every week</label><p class="note" style="margin:4px 0 0" id="bAutoNote">${autoBkNote()}</p>`:''}
    <h3 class="seth" id="setAbout">About &amp; privacy</h3><div id="aboutSet"></div>`});
   bindPrefs();bindLogo();bindLock();bindSq();bindAbout();const data=backupJSON;
-  if(!db){const n=S.photos.length,mb=S.photos.reduce((a,p)=>a+(p.size||(p.data||'').length)*.75,0)/1048576;const rec=((localStorage.getItem('lapi')||'').length*2)/1048576;$('#bSize').textContent=(n?`You have ${n} photo${n===1?'':'s'} using ${mb<0.1?'under 0.1':mb.toFixed(1)} MB. `:'')+(PDB.ok?`Your records use ${rec<0.1?'under 0.1':rec.toFixed(1)} MB of about 10 MB available${rec>7?'. That’s getting full: back up, then delete old bank statement lines you no longer need':''}.`:'')}
+  if(!db){const n=S.photos.length,mb=S.photos.reduce((a,p)=>a+(p.size||(p.data||'').length)*.75,0)/1048576;const rec=((localStorage.getItem('lapi')||'').length*2)/1048576;$('#bSize').textContent=(n?`You have ${n} photo${n===1?'':'s'} using ${mb<0.1?'under 0.1':mb.toFixed(1)} MB. `:'')+(idbMode?'Your records are kept in the app’s own database, with room for many years.':PDB.ok?`Your records use ${rec<0.1?'under 0.1':rec.toFixed(1)} MB of about 10 MB available${rec>7?'. That’s getting full: back up, then delete old bank statement lines you no longer need':''}.`:'')}
   const mark=()=>putSettings({lastBackup:Date.now()});
-  $('#bDrive').onclick=()=>backupToDrive();$('#undoOpen').onclick=()=>undoList();if($('#sySet'))$('#sySet').onclick=()=>syncSetup();if($('#sySync'))$('#sySync').onclick=()=>syncNow(true);if($('#syMore'))$('#syMore').onclick=()=>syncDetails();if($('#bAuto'))$('#bAuto').onchange=async e=>{await putSettings({autoBk:e.target.checked});if(e.target.checked){await autoBackup(true)}$('#bAutoNote').textContent=autoBkNote()};$('#bDl').onclick=async()=>{toast('Preparing backup…');if(await saveFile(`${appName()} backup ${today()}.json`,await data()))mark()};$('#bCopy').onclick=async()=>{if(await copyText(await data(false))){mark();setTimeout(()=>toast('Copied (records only: photos are too big to copy)'),1200)}};
+  $('#bDrive').onclick=()=>backupToDrive();$('#undoOpen').onclick=()=>undoList();if($('#sySet'))$('#sySet').onclick=()=>syncSetup();if($('#sySync'))$('#sySync').onclick=()=>syncNow(true);if($('#syMore'))$('#syMore').onclick=()=>syncDetails();if($('#syAdd'))$('#syAdd').onclick=()=>syncShowCode();if($('#bAuto'))$('#bAuto').onchange=async e=>{await putSettings({autoBk:e.target.checked});if(e.target.checked){await autoBackup(true)}$('#bAutoNote').textContent=autoBkNote()};$('#bDl').onclick=async()=>{toast('Preparing backup…');if(await saveFile(`${appName()} backup ${today()}.json`,await data()))mark()};$('#bCopy').onclick=async()=>{if(await copyText(await data(false))){mark();setTimeout(()=>toast('Copied (records only: photos are too big to copy)'),1200)}};
   $('#bFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;let j;try{j=JSON.parse(await f.text())}catch(err){toast('That file is not a backup');return}
     toast('Restoring…');for(const c of COLS)for(const r of (j[c]||[]))await put(c,r);
     if(Array.isArray(j.photos)&&j.photos.length){if(db){for(const p of j.photos){const{id,...b}=p;try{await db.collection('photos').doc(id||uid()).set(b)}catch(e){}}}else{const have=new Set(S.photos.map(p=>p.id)),add=j.photos.filter(p=>p.id&&!have.has(p.id));add.forEach(p=>syncMark('photos',p.id));if(PDB.ok){try{await PDB.putMany(add);S.photos.push(...add.map(pMeta))}catch(e){S.photos.push(...add);saveLocal()}}else{S.photos.push(...add);saveLocal()}}}
@@ -3110,10 +3302,13 @@ window.addEventListener('unhandledrejection',e=>noteErr(e.reason?.message||e.rea
 const errLog=()=>{try{return JSON.parse(localStorage.getItem(ERRK)||'[]')}catch(e){return[]}};
 /* ================= ABOUT, PRIVACY & ERASE ================= */
 /* ---- what's new: add an entry at the top for each update ---- */
-const BUILD='24 Nov 11:00';
+const BUILD='25 Nov 17:43';
 const CHANGES=[
  {v:'3.1',d:'2026-11-24',new:['<b>Use Workshop on your computer too, kept in step with your phone.</b> Open the Workshop website on your computer and install it as an app (the install icon at the right of the address bar). Then turn on <b>Settings → Sync with your other devices</b> on both: changes on one show up on the other, and each still works without the internet.',
-  'Sync keeps your records in your own Google Drive, scrambled with a passphrase only you know. There’s no new account, and setting it up takes about five minutes on your computer.',
+  '<b>Smoother on the phone.</b> The top of the screen tucks away as you scroll down a list and comes back when you scroll up. Pip steps aside while you scroll. Stock filters sit behind one <b>Filters</b> button, which shows how many are on. Buttons and tick boxes are easier to tap, and number boxes open the number keypad with the old number ready to type over.',
+  'A small <b>Synced</b> light at the top shows whether your devices are in step. Tap it to see what was sent and received.',
+  'The backup reminder only shows when there’s no recent backup of any kind, and has a <b>Back up now</b> button right there.',
+  '<b>Sync with nothing to set up.</b> Open Settings → Sync with your other devices and tap <b>Turn on sync</b> on the device with your records. Then, on your other device, choose <b>Join with a code</b> and scan the code it shows. Records are scrambled on the device with that code before they leave it, so nobody else can read them, and changes reach your other device within seconds of it being open.',
   '<b>Undo for big mistakes.</b> Deleted something, or a big change went wrong (a stocktake, an order, a restore)? Settings → <b>Undo</b> lists everything deleted and every bigger change from the last 7 days. Tap <b>Put back</b>.',
   '<b>See what sync is doing.</b> Settings → Sync → <b>Activity and options</b> shows what came in and went out, and when. Once a month the app checks that your devices hold exactly the same records and fixes any difference by itself. You can also run the check yourself.',
   '<b>Rough and cut stones each have their place.</b> Lapidary → Rough holds your rough, slabs and preforms. Once a stone is faceted or cabbed it moves to the new <b>Silver → Stones</b> tab, ready to set. Open a piece of rough and tap <b>Cut a stone from this</b> to record what you cut; the rough goes down by what you used.',
@@ -3123,7 +3318,11 @@ const CHANGES=[
   '<b>Buying something you already stock?</b> The order offers to add it to what you have, so your stock list stays tidy and the cost per gram or cm is averaged.',
   '<b>Automatic backups:</b> once a week, if anything has changed, a backup is saved on your phone in Downloads/Workshop/Automatic backups. It stays there even if the app is removed. Turn it off in Settings → Backup.',
   'Pip has been polished: now a proper cut gem that takes on your colour theme and looks right in dark mode, with a little sparkle. Pip also keeps to a handful of messages, reminders first.'],
-  fixed:['Closing a form you’ve typed in, with Close or the Back button, now asks first so you don’t lose your work. When the app is locked, Back leaves the app.',
+  fixed:['Records are now kept in the app’s own database, one entry per record, instead of one big block. There’s room for many years of records (the old way ran out at about 5 MB), saving a change writes just that record, and the app opens faster. Photos’ details are kept with the records, so opening the app no longer reads every photo. Your records move over by themselves the first time you open this version.',
+   'Faster with lots of records: searching stock and sales waits for a pause in typing, and switching screens does less repeated work.',
+   'Some small text was hard to read: today’s date in the calendar, the green and orange status labels, and Pip’s number in dark mode. They now meet the accessibility standard for contrast.',
+   'Sync could stall in the Android app, or say it couldn’t connect when the address was right. The phone now sends sync requests itself, large sets of records go in smaller pieces, and if something goes wrong the app says what it was. If you set sync up with the Google script, set it up again with Cloudflare (Settings → Sync with your other devices).',
+   'Closing a form you’ve typed in, with Close or the Back button, now asks first so you don’t lose your work. When the app is locked, Back leaves the app.',
   'The app starts at your phone’s text size, and screens fit better with large text.',
   'Postage on an order is now split across the items to the exact cent.',
   'Soldering tripods, solder picks and photo light boxes now land in the right category.']},
@@ -3167,7 +3366,7 @@ let wnDone=false;function whatsNewCheck(){if(wnDone)return;let seen=null;try{see
   wnDone=true;try{localStorage.setItem(SEENK,cur)}catch(e){}whatsNew(seen||'1.6')}
 function aboutHTML(){const where=ONDEV?'on this phone':'on this device';
   return `<p style="margin-top:0"><b>${esc(appName())}</b> · version ${APP_VER} <span class="note">(build ${BUILD})</span> · <a href="#" id="wnShow">What’s new</a></p>
-   ${syncOn()?`<p><b>Your records stay on your devices and in your own Google Drive</b>, where they’re scrambled with your passphrase so only your devices can read them. There’s no sign-up, no advertising and no tracking, and nothing is sent to the app’s maker.</p>`:`<p><b>Your records stay ${where}.</b> There’s no sign-up, no advertising and no tracking, and nothing is sent to the app’s maker. Back up regularly: if this ${ONDEV?'phone is lost or the app is uninstalled':'device is lost or its browser data is cleared'}, the records go with it.</p>`}
+   ${syncOn()?`<p><b>Your records stay on your devices and in your own sync database</b>, where they’re scrambled with your passphrase so only your devices can read them. There’s no sign-up, no advertising and no tracking, and nothing is sent to the app’s maker.</p>`:`<p><b>Your records stay ${where}.</b> There’s no sign-up, no advertising and no tracking, and nothing is sent to the app’s maker. Back up regularly: if this ${ONDEV?'phone is lost or the app is uninstalled':'device is lost or its browser data is cleared'}, the records go with it.</p>`}
    <p class="note">The app only goes online when you ask it to: opening a supplier link, sending an email or text, backing up to Google Drive, syncing with your other devices (if you turn it on), taking a Square payment, or making your first PDF or QR code${ONDEV?' (the Android app has these built in, so they also work offline)':' (the free tools for these download once)'}.</p>
    <p class="note">Tax features help you keep records for your accountant. They aren’t tax, legal or financial advice. Supplier details and prices were researched in November 2026; check with the supplier before ordering.</p>
    <h3 style="margin:16px 0 4px">Start fresh</h3><p class="note" style="margin:0 0 8px">Deletes every record and photo. Your settings (business details, logo and app lock) are kept. This can’t be undone, so make a backup first.</p>
@@ -3683,7 +3882,7 @@ const SKINS=[['amethyst','Amethyst','#2a1442','#6a2fb3','#c27c00'],['obsidian','
 const START=[['home','Business overview'],['silver','Silversmithing overview'],['lap','Lapidary overview'],['sales','Sales'],['market','Market mode'],['jobs','Jobs & approvals']];
 const noLap=()=>S.settings.lapOff===true;
 const HAD_HASH=!!location.hash&&location.hash!=='#';let startDone=false,lastLap=null;
-function zqApply(){const R=document.documentElement,z=parseFloat(getComputedStyle(R).getPropertyValue('--z'))||1,W=innerWidth,E=W/z;for(const N of[420,600,700,900])R.classList.toggle('zq'+N,z>1&&W>N&&E<=N)}addEventListener('resize',()=>zqApply());function applyPrefs(){const st=S.settings,R=document.documentElement;
+let zqKey='';function zqApply(){const R=document.documentElement,zs=R.style.getPropertyValue('--z'),key=zs+'|'+innerWidth;if(key===zqKey)return;zqKey=key;const z=parseFloat(zs||getComputedStyle(R).getPropertyValue('--z'))||1,W=innerWidth,E=W/z;for(const N of[420,600,700,900])R.classList.toggle('zq'+N,z>1&&W>N&&E<=N)}addEventListener('resize',()=>zqApply());function applyPrefs(){const st=S.settings,R=document.documentElement;
   R.dataset.skin=st.skin||'amethyst';
   if(st.mode==='light'||st.mode==='dark')R.dataset.theme=st.mode;else delete R.dataset.theme;
   R.style.setProperty('--z',{s:.9,m:1,l:1.1,xl:1.22}[st.textSize||phoneTextSize()]);zqApply();
@@ -3776,7 +3975,7 @@ let palMsgs=[],palI=0,palShown=false,palSig='',palWarnAll=0;
 const palName=()=>(S.settings.palName||'Pip').trim()||'Pip';
 function palMessages(){const out=[],t=today(),net=s=>saleCalc(s).net,sum=a=>a.reduce((x,s)=>x+net(s),0),inR=(s,a,b)=>s.date>=a&&s.date<=b;
   const h=new Date().getHours(),hi=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
-  const tod=S.sales.filter(s=>s.date===t),wk=S.sales.filter(s=>inR(s,addDays(t,-6),t)),pw=S.sales.filter(s=>inR(s,addDays(t,-13),addDays(t,-7)));
+  const d6=addDays(t,-6),d7=addDays(t,-7),d13=addDays(t,-13),tod=S.sales.filter(s=>s.date===t),wk=S.sales.filter(s=>inR(s,d6,t)),pw=S.sales.filter(s=>inR(s,d13,d7));
   const r=periodRange('m0'),ms=S.sales.filter(s=>inP(s.date,r)),mTot=sum(ms),goal=num(S.settings.goal);
   if(tod.length)out.push(['greedy',`${hi}! You’ve made <b>${money(sum(tod))}</b> today from ${tod.length} sale${tod.length>1?'s':''}. Keep it up!`]);
   if(wk.length||pw.length){const a=sum(wk),b=sum(pw);
@@ -3907,12 +4106,12 @@ function cashTender(total,done){const due=cashRound(total),notes=[5,10,20,50,100
 /* ================= ROUND 2: scanning, thumbnails, birthdays, profit & loss ================= */
 /* ---- scan a label's QR code with the camera ---- */
 const findCode=t=>{t=String(t||'').trim().toLowerCase();return S.stock.find(x=>String(x.sku||'').toLowerCase()===t)||S.stock.find(x=>x.id.toLowerCase()===t)||S.stock.find(x=>(x.name||'').toLowerCase()===t)};
-async function scanCode(onFound,keep){
+async function scanCode(onFound,keep,raw){
   const md=!!navigator.mediaDevices?.getUserMedia;
-  openDlg(keep?'Scan labels':'Scan a label',`${md?'<div class="scanbox"><video id="scV" playsinline muted></video><i></i></div>':''}<p class="note" id="scMsg">${md?(keep?'Point the camera at each tag in turn (QR code or barcode). Each piece is added to the sale.':'Point the camera at the code on one of your tags or labels.'):'This phone can’t use the camera here. Type the code instead.'}</p>${keep?'<div class="hist" id="scList" style="margin:6px 0"></div>':''}<div class="form" style="margin-top:10px"><label class="full">Or type the SKU<input id="scT" placeholder="e.g. LW-0012" autocomplete="off"></label></div>`,`<span class="sp"></span>${keep?'<button type="button" id="scDone" class="pri">Done</button><button type="submit">Add</button>':'<button type="submit" class="pri">Find</button>'}`);
+  openDlg(raw?raw.title:keep?'Scan labels':'Scan a label',`${md?'<div class="scanbox"><video id="scV" playsinline muted></video><i></i></div>':''}<p class="note" id="scMsg">${raw?esc(raw.msg):md?(keep?'Point the camera at each tag in turn (QR code or barcode). Each piece is added to the sale.':'Point the camera at the code on one of your tags or labels.'):'This phone can’t use the camera here. Type the code instead.'}</p>${keep?'<div class="hist" id="scList" style="margin:6px 0"></div>':''}<div class="form" style="margin-top:10px"><label class="full">${raw?esc(raw.label):'Or type the SKU'}<input id="scT" placeholder="${raw?'':'e.g. LW-0012'}" autocomplete="off"></label></div>`,`<span class="sp"></span>${keep?'<button type="button" id="scDone" class="pri">Done</button><button type="submit">Add</button>':'<button type="submit" class="pri">Find</button>'}`);
   let stream=null,stop=false;const end=()=>{stop=true;stream?.getTracks().forEach(t=>t.stop())};dlg.addEventListener('close',end,{once:true});dlgCleanup=end;
   const seen=new Map(),msg=t=>{const m=$('#scMsg');if(m)m.textContent=t};
-  const hit=code=>{const now=Date.now();if(now-(seen.get(code)||0)<2500)return;seen.set(code,now);const x=findCode(code);
+  const hit=code=>{const now=Date.now();if(now-(seen.get(code)||0)<2500)return;seen.set(code,now);if(raw){end();navigator.vibrate?.(60);onFound(code);return}const x=findCode(code);
     if(!x){msg(`No item with code “${code}”.`);toast('No item with that code');return}navigator.vibrate?.(60);
     if(!keep){end();dlg.close();onFound(x);return}const r=onFound(x);if(r!==false){$('#scList')?.insertAdjacentHTML('afterbegin',`<div><span>${esc(x.name)}</span><b>${x.price?money(x.price):''}</b></div>`);msg(`Added ${x.name}. Scan the next one, or tap Done.`)}};
   $('#dform').onsubmit=e=>{e.preventDefault();const el=$('#scT');if(!el)return;const v=el.value.trim();if(v){el.value='';seen.delete(v);hit(v)}};
@@ -4197,7 +4396,8 @@ const suggestCat=(t,sup)=>{sup=String(sup||'').trim().toLowerCase();if(sup){cons
 /* ---- repeating expenses: add each due copy (ids are fixed, so it never doubles up) ---- */
 const repAt=(d,r,n)=>{const x=new Date(d+'T00:00'),day=x.getDate();x.setDate(1);x.setMonth(x.getMonth()+n*(r==='m'?1:r==='q'?3:12));const last=new Date(x.getFullYear(),x.getMonth()+1,0).getDate();x.setDate(Math.min(day,last));return iso(x)};
 let repT=0;async function runRepeats(){if(Date.now()-repT<30000)return;repT=Date.now();const t=today();
-  for(const x of S.ledger.filter(l=>l.rep&&!l.repOf&&l.date&&!l.grp)){let n=1,d=repAt(x.date,x.rep,1);while(d<=t&&n<=1200){const id=x.id+'~'+d;if(!byId('ledger',id)&&!isLockedDate(d)&&!(x.repSkip||[]).includes(d)){const{id:_,rep,rcpt,rcptRef,repSkip,...rest}=x;try{await put('ledger',{...rest,id,date:d,repOf:x.id,rcpt:false})}catch(e){}}n++;d=repAt(x.date,x.rep,n)}}}
+  const have=new Set(S.ledger.map(l=>l.id));
+  for(const x of S.ledger.filter(l=>l.rep&&!l.repOf&&l.date&&!l.grp)){let n=1,d=repAt(x.date,x.rep,1);while(d<=t&&n<=1200){const id=x.id+'~'+d;if(!have.has(id)&&!isLockedDate(d)&&!(x.repSkip||[]).includes(d)){const{id:_,rep,rcpt,rcptRef,repSkip,...rest}=x;try{await put('ledger',{...rest,id,date:d,repOf:x.id,rcpt:false});have.add(id)}catch(e){}}n++;d=repAt(x.date,x.rep,n)}}}
 /* ---- backups ---- */
 async function allPhotos(){if(db){try{const q=await db.collection('photos').get();return q.docs.map(d=>({id:d.id,...d.data()}))}catch(e){return[]}}if(PDB.ok){try{return await PDB.all()}catch(e){}}return S.photos}
 async function backupJSON(withPh=true){return JSON.stringify({app:'lapidary-workbench',v:3,date:today(),...Object.fromEntries(COLS.map(c=>[c,S[c]])),settings:S.settings,...(withPh?{photos:await allPhotos()}:{})})}
@@ -4691,9 +4891,10 @@ function bankLines(rows,m){const body=m.hasH?rows.slice(1):rows;return body.map(
   return{date,amount:amt,desc:String(r[m.desc]??'').trim()}}).filter(x=>x.date&&x.amount!=null&&Math.abs(x.amount)>0.004)}
 const bankId=x=>'b'+Array.from(`${x.date}|${x.amount.toFixed(2)}|${x.desc}`).reduce((h,c)=>(h*31+c.charCodeAt(0))>>>0,7).toString(36)+x.date.replace(/-/g,'');
 /* match statement lines to records: same amount, within 7 days, one-to-one */
-function bankMatch(lines){const pool=[],og=new Map();S.ledger.forEach(x=>{if(x.grp&&!x.oRet){const o=og.get(x.grp)||{k:'ord',id:x.grp,date:x.date,amt:0,desc:'Order'+(x.supplier?' from '+x.supplier:''),rec:x};o.amt-=num(x.amount);og.set(x.grp,o);return}pool.push({k:'led',id:x.id,date:x.date,amt:x.type==='out'?-num(x.amount):num(x.amount),desc:x.desc||x.cat,rec:x})});og.forEach(o=>{o.amt=r2(o.amt);pool.push(o)});
+let bmMemo=null;function bankMatch(lines){if(bmMemo&&bmMemo.dv===DV&&bmMemo.lines===lines&&bmMemo.n===lines.length)return bmMemo.out;const out=bankMatch1(lines);bmMemo={dv:DV,lines,n:lines.length,out};return out}
+function bankMatch1(lines){const pool=[],og=new Map(),jobSale=new Set(S.jobs.map(j=>j.saleId).filter(Boolean));S.ledger.forEach(x=>{if(x.grp&&!x.oRet){const o=og.get(x.grp)||{k:'ord',id:x.grp,date:x.date,amt:0,desc:'Order'+(x.supplier?' from '+x.supplier:''),rec:x};o.amt-=num(x.amount);og.set(x.grp,o);return}pool.push({k:'led',id:x.id,date:x.date,amt:x.type==='out'?-num(x.amount):num(x.amount),desc:x.desc||x.cat,rec:x})});og.forEach(o=>{o.amt=r2(o.amt);pool.push(o)});
   S.sales.forEach(s=>{const c=saleCalc(s),dep=s.refundOf?0:Math.max(0,num(s.deposit));pool.push({k:'sale',id:s.id,date:s.date,amt:s.refundOf?-Math.abs(c.total):c.total-dep,net:c.total-dep-num(c.fees),desc:'Sale '+s.no+(dep?' (balance)':'')});
-    if(dep&&!S.jobs.some(j=>j.saleId===s.id))pool.push({k:'dep',id:'s'+s.id,date:s.date,amt:dep,desc:'Deposit on sale '+s.no})});
+    if(dep&&!jobSale.has(s.id))pool.push({k:'dep',id:'s'+s.id,date:s.date,amt:dep,desc:'Deposit on sale '+s.no})});
   S.jobs.filter(j=>num(j.deposit)>0).forEach(j=>pool.push({k:'dep',id:j.id,date:j.received||(j.updated?iso(new Date(j.updated)):today()),amt:num(j.deposit),desc:'Deposit – '+(j.title||'job')}));
   S.events.filter(e=>num(e.fee)).forEach(e=>pool.push({k:'event',id:e.id,date:e.date,amt:-num(e.fee),desc:'Stall fee – '+e.name}));
   (S.owner||[]).forEach(o=>pool.push({k:'owner',id:o.id,date:o.date,amt:o.type==='in'?num(o.amount):-num(o.amount),desc:o.desc||'Owner money'}));
@@ -4874,11 +5075,30 @@ $('#addWish').onclick=()=>wishEdit();$('#wlQ').oninput=renderWish;
 $('#wlSeg').onclick=e=>{const b=e.target.closest('[data-v]');if(!b)return;wlMode=b.dataset.v;renderWish()};
 $('#wlTiles').onclick=e=>{const a=e.target.closest('[data-noprice]');if(!a)return;e.preventDefault();const w=(S.wants||[]).find(x=>!x.bought&&(x.price===''||x.price==null));if(w){wishEdit(w);setTimeout(()=>{const el=$('#dform [name=price]');el?.focus();el?.closest('label')?.classList.add('flash')},200)}};
 $('#wlList').onclick=e=>{const it=e.target.closest('.item');if(it){const w=byId('wants',it.dataset.id);if(w)wishView(w)}};
-function render(){if(applyPrefs())return;setTimeout(runRepeats,1500);if(!wnDone)setTimeout(whatsNewCheck,1800);if(!areaFixed)setTimeout(fixAreas,2000);if(!sqBoot){sqBoot=true;setTimeout(sqBootCheck,1200);setTimeout(()=>autoBackup(),25000);if(syncOn())setTimeout(()=>syncNow(),2500);setTimeout(shareIn,700);setTimeout(function rb(){if(dlg.open||locked||document.querySelector('dialog[open]')){setTimeout(rb,3000);return}remBootCheck()},4500)}$('#bizName').textContent=(S.settings.appName||'').trim()||S.settings.name||'Workshop';if(!lockBoot&&lockOn()){lockBoot=true;lockNow()}if(/ · /.test(document.title))document.title=document.title.replace(/ · [^·]*$/,' · '+appName());refreshCustDL();({home:renderHome,stock:renderStock,sales:renderSales,jobs:renderJobs,customers:renderCustomers,designs:renderDesigns,money:renderMoney,market:renderMarket,calendar:renderCalendar,wishlist:renderWish,taxtime:renderTaxTime,lap:renderLap,silver:renderSilver,guide:renderGuide,tools:()=>{}})[tab]();clearTimeout(palT);palT=setTimeout(palUpdate,250);remSync()}
+function render(){if(!recsReady)return;if(applyPrefs())return;setTimeout(runRepeats,1500);if(!wnDone)setTimeout(whatsNewCheck,1800);if(!areaFixed)setTimeout(fixAreas,2000);if(!sqBoot){sqBoot=true;setTimeout(sqBootCheck,1200);setTimeout(()=>autoBackup(),25000);if(syncOn())setTimeout(()=>syncNow(),2500);setTimeout(shareIn,700);setTimeout(function rb(){if(dlg.open||locked||document.querySelector('dialog[open]')){setTimeout(rb,3000);return}remBootCheck()},4500)}$('#bizName').textContent=(S.settings.appName||'').trim()||S.settings.name||'Workshop';if(!lockBoot&&lockOn()){lockBoot=true;lockNow()}if(/ · /.test(document.title))document.title=document.title.replace(/ · [^·]*$/,' · '+appName());refreshCustDL();({home:renderHome,stock:renderStock,sales:renderSales,jobs:renderJobs,customers:renderCustomers,designs:renderDesigns,money:renderMoney,market:renderMarket,calendar:renderCalendar,wishlist:renderWish,taxtime:renderTaxTime,lap:renderLap,silver:renderSilver,guide:renderGuide,tools:()=>{}})[tab]();clearTimeout(palT);palT=setTimeout(palUpdate,250);remSync();if(bkOn)bkBanner();syncChipShow()}
 let palT;
+
+/* ---- polish pass behaviours ---- */
+(()=>{const R=document.documentElement;let y0=scrollY,tuckT=0;
+  const phone=()=>innerWidth<=900||R.classList.contains('zq900');
+  const measure=()=>{const sd=$('.side'),nv=$('#tabs');if(!sd||!nv)return;R.style.setProperty('--tuck',Math.max(0,nv.getBoundingClientRect().top-sd.getBoundingClientRect().top)+'px')};
+  addEventListener('scroll',()=>{const y=scrollY,d=y-y0;if(Math.abs(d)<6)return;
+    if(phone()){if(d>0&&y>140){if(!R.classList.contains('hdrTuck')){measure();R.classList.add('hdrTuck')}}else if(d<0)R.classList.remove('hdrTuck')}
+    /* Pip steps aside while you scroll down a list, and comes back when you stop or scroll up */
+    if(d>0&&y>200)R.classList.add('palTuck');else R.classList.remove('palTuck');clearTimeout(tuckT);tuckT=setTimeout(()=>R.classList.remove('palTuck'),1200);
+    y0=y},{passive:true});
+  addEventListener('hashchange',()=>{R.classList.remove('hdrTuck');R.classList.remove('palTuck')});
+  addEventListener('resize',()=>{if(!phone())R.classList.remove('hdrTuck')});
+  const sc=$('#syncChip');if(sc)sc.onclick=()=>syncDetails();addEventListener('online',syncChipShow);addEventListener('offline',syncChipShow);
+  const fb=$('#stockFBtn');if(fb)fb.onclick=()=>{const o=$('#stockF').classList.toggle('open');fb.setAttribute('aria-expanded',o)};
+  /* number fields: the number keypad on phones, select the old value when you tap in, and no accidental changes from a mouse wheel */
+  document.addEventListener('focusin',e=>{const t=e.target;if(t&&t.tagName==='INPUT'&&t.type==='number'){if(!t.hasAttribute('inputmode'))t.setAttribute('inputmode','decimal');setTimeout(()=>{try{if(document.activeElement===t)t.select()}catch(err){}},0)}});
+  document.addEventListener('wheel',e=>{const t=document.activeElement;if(t&&t.type==='number'&&e.target===t)t.blur()},{passive:true});
+  const gq=$('#gq'),ph=()=>{if(gq)gq.placeholder=innerWidth<=600?gq.dataset.short:'Search stock, SKU, contacts, invoices'};ph();addEventListener('resize',ph);
+})();
 let rt;const renderSoon=()=>{clearTimeout(rt);rt=setTimeout(render,30)};
 route();
-(async()=>{const local=()=>{loadLocal();loadPhotosLocal().then(()=>renderSoon());render();calc();banner(S.settings.lastBackup&&Date.now()-S.settings.lastBackup<14*864e5?'':'Your records are saved on this phone. Make a backup now and then (Settings → Backup) so they’re safe if the phone is lost or reset.');navigator.storage?.persist?.()};
+(async()=>{const local=async()=>{try{await loadLocal()}catch(e){return}loadPhotosLocal().then(()=>renderSoon());render();calc();bkBanner();navigator.storage?.persist?.()};
   if(!window.claude||!window.claude.use){local();return}
   banner('Loading your records…');const timer=setTimeout(()=>banner('Still connecting to your saved records. Changes may not show yet.'),10000);
   try{db=await window.claude.use('db')}catch(e){db=null}if(!db){clearTimeout(timer);local();return}
